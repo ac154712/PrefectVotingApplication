@@ -8,23 +8,26 @@ namespace PrefectVotingApplication.Models
         [Key]
         public int UserId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "First Name is required. ")]
+        [StringLength(50, ErrorMessage = "First Name must not exceed 50 characters.")]
         public string FirstName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Last Name is required. ")]
+        [StringLength(50, ErrorMessage = "Last Name must not exceed 50 characters.")]
         public string LastName { get; set; }
 
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Email is required. ")]
+        [EmailAddress(ErrorMessage = "Invalid email format. ")]
         public string Email { get; set; }
 
         [Required]
         public string Picture { get; set; }
 
-        [Required]
+        [StringLength(450, ErrorMessage = "Description must not exceed 600 characters.")]
         public string Description { get; set; }
 
+        [Required(ErrorMessage = "Role ID is required. ")]
         public int RoleId { get; set; }
-        public RoleManager Role { get; set; } //Navigation property
+        public Role Role { get; set; } //Navigation property
     }
 }

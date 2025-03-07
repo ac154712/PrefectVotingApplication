@@ -7,18 +7,20 @@ namespace PrefectVotingApplication.Models
         [Key]
         public int ElectionId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Title is required. ")]
+        [StringLength(100, ErrorMessage = "Election Name cannot exceed 100 characters.")]
         public string ElectionTitle { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Start Date is required. ")]
         public DateTime StartDate { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "End Date is required. ")]
         public DateTime EndDate { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Status is required. ")]
+        [EnumDataType(typeof(ElectionStatus), ErrorMessage = "Invalid status.")]
         public ElectionStatus Status { get; set; }
-        public ICollection<Votes> Votes { get; set; }
+        public ICollection<Votes> Votes { get; set; } //Linking to Votes model - collecting vote ids
 
         //Enum for Election Status
         public enum ElectionStatus

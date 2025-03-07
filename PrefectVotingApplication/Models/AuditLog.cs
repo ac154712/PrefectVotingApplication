@@ -1,6 +1,7 @@
-﻿using Microsoft.Identity.Client;
-using System.ComponentModel.DataAnnotations;
-
+﻿using Microsoft.Build.Framework;
+using Microsoft.Identity.Client;
+using System.Runtime.InteropServices;
+using RequiredAttribute = System.ComponentModel.DataAnnotations.RequiredAttribute;
 namespace PrefectVotingApplication.Models
 {
     public class AuditLog
@@ -8,14 +9,14 @@ namespace PrefectVotingApplication.Models
         [Key]
         public int LogId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Vote ID is required. ")]
         public int VoteId { get; set; } // foregin key to Votes
 
-        [Required]
+        [Required(ErrorMessage = "User ID is required. ")]
         public int UserId { get; set; }
         public User User { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please input an action. ")]
         public AuditAction Action { get; set; }
 
         [Required]

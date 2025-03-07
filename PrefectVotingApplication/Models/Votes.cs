@@ -7,10 +7,18 @@ namespace PrefectVotingApplication.Models
         [Key]
         public int VoteId { get; set; }
 
-        [Required]
-        public int VoterId { get; set; }
-        public User Voter { get; set; }
+        [Required(ErrorMessage = "Voter ID is required. ")]
+        public int VoterId { get; set; } //= User UserId 
+        [Required(ErrorMessage = "Voter is required. ")]
+        public User UserId { get; set; }
 
+        [Required(ErrorMessage = "Last Name is required. ")]
+        public int RoleId { get; set; }
+
+        [Required(ErrorMessage = "Election ID is required. ")]
+        public int ElectionId { get; set; }
+        [Required(ErrorMessage = "Please input a date. ")]
+        public DateTime Timestamp { get; set; }
 
 
     }
