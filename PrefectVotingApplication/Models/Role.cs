@@ -13,7 +13,8 @@ namespace PrefectVotingApplication.Models
         [Required(ErrorMessage = "Choose from dropdown below...")]
         public int VoteWeight { get; set; } // Teachers get 20, students get 1
 
-        public ICollection<User> Users { get; set; } 
+        // This is the navigation property for the reverse relationship.
+        public ICollection<User> Users { get; set; } // This links back to all Users with this Role
 
         public enum RoleNames
         {

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Intrinsics.X86;
 
 namespace PrefectVotingApplication.Models
 {
@@ -28,6 +30,7 @@ namespace PrefectVotingApplication.Models
 
         [Required(ErrorMessage = "Role ID is required. ")]
         public int RoleId { get; set; }
+        // This is the navigation property.EF will use the RoleId foreign key to join the Role table.
         public Role Role { get; set; } //Navigation property
     }
 }

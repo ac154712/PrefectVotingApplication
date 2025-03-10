@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrefectVotingApplication.Models
 {
@@ -7,13 +8,15 @@ namespace PrefectVotingApplication.Models
         [Key]
         public int VoteId { get; set; }
 
+        [ForeignKey("Voter")]
         [Required(ErrorMessage = "Voter ID is required. ")]
-        public int VoterId { get; set; } //= User UserId 
-        [Required(ErrorMessage = "Voter is required. ")]
-        public User UserId { get; set; }
+        public int VoterId { get; set; }
+        public User Voter { get; set; } //= User UserId 
 
-        [Required(ErrorMessage = "Last Name is required. ")]
-        public int RoleId { get; set; }
+        [ForeignKey("Receiver")]
+        [Required(ErrorMessage = "Voter is required. ")]
+        public int ReceiverId { get; set; }
+        public User Receiver { get; set; }
 
         [Required(ErrorMessage = "Election ID is required. ")]
         public int ElectionId { get; set; }

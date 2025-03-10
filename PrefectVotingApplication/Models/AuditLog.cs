@@ -2,6 +2,8 @@
 using Microsoft.Identity.Client;
 using System.Runtime.InteropServices;
 using RequiredAttribute = System.ComponentModel.DataAnnotations.RequiredAttribute;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace PrefectVotingApplication.Models
 {
     public class AuditLog
@@ -11,16 +13,18 @@ namespace PrefectVotingApplication.Models
 
         [Required(ErrorMessage = "Vote ID is required. ")]
         public int VoteId { get; set; } // foregin key to Votes
+        public Votes Vote { get; set; }
 
         [Required(ErrorMessage = "User ID is required. ")]
         public int UserId { get; set; }
+        [ForeignKey("UserId")]
         public User User { get; set; }
 
         [Required(ErrorMessage = "Please input an action. ")]
         public AuditAction Action { get; set; }
 
         [Required]
-        public DateTime Timestamp { get; set; } = DateTime.Now;
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
         //enum for Audit Actions
         public enum AuditAction
