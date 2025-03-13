@@ -10,11 +10,13 @@ namespace PrefectVotingApplication.Models
 
         [ForeignKey("Voter")]
         [Required(ErrorMessage = "Voter ID is required. ")]
+        [Display(Name = "Voter")]
         public int VoterId { get; set; }
         public User Voter { get; set; } //= User UserId 
 
         [ForeignKey("Receiver")]
         [Required(ErrorMessage = "Voter is required. ")]
+        [Display(Name = "Receiver")]
         public int ReceiverId { get; set; }
         public User Receiver { get; set; }
 

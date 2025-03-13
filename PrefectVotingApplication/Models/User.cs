@@ -17,6 +17,7 @@ namespace PrefectVotingApplication.Models
 
         [Required(ErrorMessage = "Last Name is required. ")]
         [StringLength(50, ErrorMessage = "Last Name must not exceed 50 characters.")]
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
         [Required(ErrorMessage = "Email is required. ")]
