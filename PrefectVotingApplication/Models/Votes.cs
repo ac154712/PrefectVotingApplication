@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PrefectVotingApplication.Areas.Identity.Data;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrefectVotingApplication.Models
@@ -12,13 +13,13 @@ namespace PrefectVotingApplication.Models
         [Required(ErrorMessage = "Voter ID is required. ")]
         [Display(Name = "Voter")]
         public int VoterId { get; set; }
-        public User Voter { get; set; } //= User UserId 
+        public PrefectVotingApplicationUser Voter { get; set; } //references the id from users table and stores it as Voter 
 
         [ForeignKey("Receiver")]
         [Required(ErrorMessage = "Voter is required. ")]
         [Display(Name = "Receiver")]
         public int ReceiverId { get; set; }
-        public User Receiver { get; set; }
+        public PrefectVotingApplicationUser Receiver { get; set; } //references the id from users table and stores it as Receiver
 
         [Required(ErrorMessage = "Election ID is required. ")]
         public int ElectionId { get; set; }
