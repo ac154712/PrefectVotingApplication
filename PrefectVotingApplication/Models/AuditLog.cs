@@ -17,7 +17,7 @@ namespace PrefectVotingApplication.Models
         public Votes Vote { get; set; }
 
         [Required(ErrorMessage = "User ID is required. ")]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         [ForeignKey("UserId")]
         public PrefectVotingApplicationUser User { get; set; }
 

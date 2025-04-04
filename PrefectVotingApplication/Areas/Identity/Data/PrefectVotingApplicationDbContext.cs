@@ -21,7 +21,7 @@ public class PrefectVotingApplicationDbContext : IdentityDbContext<PrefectVoting
         // Add your customizations after calling base.OnModelCreating(builder);
     }
 
-public DbSet<PrefectVotingApplication.Models.User> User { get; set; } = default!;
+public DbSet<PrefectVotingApplication.Areas.Identity.Data.PrefectVotingApplicationUser> User { get; set; } = default!;
 
 public DbSet<PrefectVotingApplication.Models.Role> Role { get; set; } = default!;
 

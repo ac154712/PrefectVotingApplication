@@ -1,10 +1,9 @@
-﻿using PrefectVotingApplication.Areas.Identity.Data;
-using PrefectVotingApplication.Models;
+﻿using PrefectVotingApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
-namespace AvcolGrpsCharity.Data
+namespace PrefectVotingApplication.Areas.Identity.Data
 {
     public static class DbInitializer
     {
