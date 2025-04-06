@@ -10,6 +10,7 @@ using PrefectVotingApplication.Models;
 
 namespace PrefectVotingApplication.Controllers
 {
+    [Route("AuditLog")] // makes the route AuditLog instead of AuditLogs whenever this controller is referenced in the many files in my project
     public class AuditLogsController : Controller
     {
         private readonly PrefectVotingApplicationDbContext _context;
@@ -20,6 +21,7 @@ namespace PrefectVotingApplication.Controllers
         }
 
         // GET: AuditLogs
+        [HttpGet("")] //this just gets the route i've set
         public async Task<IActionResult> Index()
         {
             var prefectVotingApplicationDbContext = _context.AuditLog.Include(a => a.User).Include(a => a.Vote);

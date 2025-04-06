@@ -99,13 +99,13 @@ namespace PrefectVotingApplication.Migrations
                         column: x => x.ReceiverId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onUpdate: ReferentialAction.Cascade);
+                        onUpdate: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Votes_AspNetUsers_VoterId",
                         column: x => x.VoterId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onUpdate: ReferentialAction.Cascade);
+                        onUpdate: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Votes_Election_ElectionId",
                         column: x => x.ElectionId,

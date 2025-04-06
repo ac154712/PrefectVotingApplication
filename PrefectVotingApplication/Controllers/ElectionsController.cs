@@ -10,6 +10,7 @@ using PrefectVotingApplication.Models;
 
 namespace PrefectVotingApplication.Controllers
 {
+    [Route("Election")]  // makes the route AuditLog instead of AuditLogs whenever this controller is referenced in the many files in my project
     public class ElectionsController : Controller
     {
         private readonly PrefectVotingApplicationDbContext _context;
@@ -20,6 +21,7 @@ namespace PrefectVotingApplication.Controllers
         }
 
         // GET: Elections
+        [HttpGet("")] 
         public async Task<IActionResult> Index()
         {
             return View(await _context.Election.ToListAsync());
