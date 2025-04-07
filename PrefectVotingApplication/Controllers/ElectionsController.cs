@@ -10,7 +10,7 @@ using PrefectVotingApplication.Models;
 
 namespace PrefectVotingApplication.Controllers
 {
-    [Route("Election")]  // makes the route AuditLog instead of AuditLogs whenever this controller is referenced in the many files in my project
+    [Route("Election")]  // makes the route Election instead of Elections whenever this controller is referenced in the many files in my project
     public class ElectionsController : Controller
     {
         private readonly PrefectVotingApplicationDbContext _context;
