@@ -49,6 +49,7 @@ namespace PrefectVotingApplication.Controllers
         }
 
         // GET: AuditLogs/Create
+        [HttpGet("AuditLog/Create")]
         public IActionResult Create()
         {
             ViewData["UserId"] = new SelectList(_context.User, "UserId", "Email");

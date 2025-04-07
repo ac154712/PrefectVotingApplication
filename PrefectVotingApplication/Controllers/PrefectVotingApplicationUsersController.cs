@@ -47,6 +47,7 @@ namespace PrefectVotingApplication.Controllers
         }
 
         // GET: PrefectVotingApplicationUsers/Create
+        [HttpGet("PrefectVotingApplicationUsers/Create")]
         public IActionResult Create()
         {
             ViewData["RoleId"] = new SelectList(_context.Role, "RoleId", "RoleId");

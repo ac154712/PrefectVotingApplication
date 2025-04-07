@@ -14,6 +14,14 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+//called my initialiser so it runs when database is created
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<PrefectVotingApplicationDbContext>();
+    DbInitializer.Initialize(context);
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

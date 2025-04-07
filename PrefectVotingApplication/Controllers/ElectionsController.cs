@@ -28,6 +28,7 @@ namespace PrefectVotingApplication.Controllers
         }
 
         // GET: Elections/Details/5
+        [HttpGet("Elections/Details")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,6 +47,7 @@ namespace PrefectVotingApplication.Controllers
         }
 
         // GET: Elections/Create
+        [HttpGet("Elections/Create")]
         public IActionResult Create()
         {
             return View();
