@@ -5,4 +5,4 @@ SELECT -- this will get all users who are students
     Email-- this is the user's email (if you have that)
 
 FROM AspNetUsers
-WHERE RoleId = 1 ; -- this filters to only student users
+WHERE RoleId = 21 ; -- this filters to only student users

@@ -1,4 +1,3 @@
-
 SELECT-- this will group votes by week and count how many happened in each
     datepart(iso_week, timestamp) as vote_week, -- this gets the iso week number
     year(timestamp) as vote_year,    -- this keeps track of the year in case weeks overlap years

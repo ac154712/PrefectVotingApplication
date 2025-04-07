@@ -34,7 +34,8 @@ VALUES
 ('10', '18', 1, getdate()),   -- henry votes for paul
 ('11', '18', 1, getdate()),   -- isabella votes for paul again
 ('12', '19', 1, getdate()),   -- jack votes for quinn
-('13', '20', 1, getdate());   -- katherine votes for rachel
+('13', '20', 1, getdate()),   -- katherine votes for rachel
+('21', '8', 1, getdate());    -- teacher sara votes for frank(a student ofc)
 
 GO
 INSERT INTO [AuditLog] (VoteId, UserId, Action, Timestamp)
