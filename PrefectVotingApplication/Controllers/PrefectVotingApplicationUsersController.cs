@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PrefectVotingApplication.Areas.Identity.Data;
 
 namespace PrefectVotingApplication.Controllers
+
 {
+    
     [Route("Users")]// makes the route Users instead of whatever it is whenever this controller is referenced in the many files in my project
     public class PrefectVotingApplicationUsersController : Controller
     {
@@ -28,6 +31,7 @@ namespace PrefectVotingApplication.Controllers
         }
 
         // GET: PrefectVotingApplicationUsers/Details/5
+        [HttpGet("PrefectVotingApplicationUsers/Details/5")]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -57,11 +61,11 @@ namespace PrefectVotingApplication.Controllers
         // POST: PrefectVotingApplicationUsers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("PrefectVotingApplicationUsers/Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,ImagePath,Description,RoleId")] PrefectVotingApplicationUser prefectVotingApplicationUsers)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 _context.Add(prefectVotingApplicationUsers);
                 await _context.SaveChangesAsync();
@@ -72,6 +76,7 @@ namespace PrefectVotingApplication.Controllers
         }
 
         // GET: PrefectVotingApplicationUsers/Edit/5
+        [HttpGet("PrefectVotingApplicationUsers/Edit/5")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -91,7 +96,7 @@ namespace PrefectVotingApplication.Controllers
         // POST: PrefectVotingApplicationUsers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("PrefectVotingApplicationUsers/Edit/5")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,FirstName,LastName,Email,ImagePath,Description,RoleId")] PrefectVotingApplicationUser prefectVotingApplicationUsers)
         {
@@ -100,7 +105,7 @@ namespace PrefectVotingApplication.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {

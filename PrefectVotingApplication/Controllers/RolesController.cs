@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using PrefectVotingApplication.Models;
 
 namespace PrefectVotingApplication.Controllers
 {
+    
     public class RolesController : Controller
     {
         private readonly PrefectVotingApplicationDbContext _context;
@@ -46,6 +48,7 @@ namespace PrefectVotingApplication.Controllers
         // GET: Roles/Create
         public IActionResult Create()
         {
+            ViewBag.RoleNameList = new SelectList(Enum.GetValues(typeof(Role.RoleNames)));
             return View();
         }
 
@@ -62,6 +65,7 @@ namespace PrefectVotingApplication.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.RoleNameList = new SelectList(Enum.GetValues(typeof(Role.RoleNames)));
             return View(role);
         }
 
@@ -113,6 +117,7 @@ namespace PrefectVotingApplication.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.RoleNameList = new SelectList(Enum.GetValues(typeof(Role.RoleNames)));
             return View(role);
         }
 

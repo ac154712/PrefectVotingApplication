@@ -49,8 +49,9 @@ namespace PrefectVotingApplication.Controllers
         // GET: Votes/Create
         public IActionResult Create()
         {
-            ViewData["ReceiverId"] = new SelectList(_context.User, "UserId", "Email");
-            ViewData["VoterId"] = new SelectList(_context.User, "UserId", "Email");
+            ViewData["ReceiverId"] = new SelectList(_context.User, "Id", "Id");
+            ViewData["VoterId"] = new SelectList(_context.User, "Id", "Id");
+            ViewBag.ElectionId = new SelectList(_context.Election, "ElectionId", "ElectionTitle");
             return View();
         }
 
@@ -67,8 +68,9 @@ namespace PrefectVotingApplication.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ReceiverId"] = new SelectList(_context.User, "UserId", "Email", votes.ReceiverId);
-            ViewData["VoterId"] = new SelectList(_context.User, "UserId", "Email", votes.VoterId);
+            ViewData["ReceiverId"] = new SelectList(_context.User, "Id", "Id", votes.ReceiverId);
+            ViewData["VoterId"] = new SelectList(_context.User, "Id", "Id", votes.VoterId);
+            ViewBag.ElectionId = new SelectList(_context.Election, "ElectionId", "ElectionTitle");
             return View(votes);
         }
 
@@ -85,8 +87,9 @@ namespace PrefectVotingApplication.Controllers
             {
                 return NotFound();
             }
-            ViewData["ReceiverId"] = new SelectList(_context.User, "UserId", "Email", votes.ReceiverId);
-            ViewData["VoterId"] = new SelectList(_context.User, "UserId", "Email", votes.VoterId);
+            ViewData["ReceiverId"] = new SelectList(_context.User, "Id", "Id", votes.ReceiverId);
+            ViewData["VoterId"] = new SelectList(_context.User, "Id", "Id", votes.VoterId);
+            ViewBag.ElectionId = new SelectList(_context.Election, "ElectionId", "ElectionTitle");
             return View(votes);
         }
 
@@ -122,8 +125,9 @@ namespace PrefectVotingApplication.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ReceiverId"] = new SelectList(_context.User, "UserId", "Email", votes.ReceiverId);
-            ViewData["VoterId"] = new SelectList(_context.User, "UserId", "Email", votes.VoterId);
+            ViewData["ReceiverId"] = new SelectList(_context.User, "Id", "Id", votes.ReceiverId);
+            ViewData["VoterId"] = new SelectList(_context.User, "Id", "Id", votes.VoterId);
+            ViewBag.ElectionId = new SelectList(_context.Election, "ElectionId", "ElectionTitle");
             return View(votes);
         }
 

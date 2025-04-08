@@ -1,34 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PrefectVotingApplication.Areas.Identity.Data;
 using PrefectVotingApplication.Models;
+using static PrefectVotingApplication.Models.Election;
 
 namespace PrefectVotingApplication.Controllers
 {
-    [Route("Election")]  // makes the route Election instead of Elections whenever this controller is referenced in the many files in my project
-    public class ElectionsController : Controller
+    
+    public class ElectionController : Controller
     {
         private readonly PrefectVotingApplicationDbContext _context;
 
-        public ElectionsController(PrefectVotingApplicationDbContext context)
+        public ElectionController(PrefectVotingApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Elections
-        [HttpGet("")] 
+        // GET: Election
         public async Task<IActionResult> Index()
         {
             return View(await _context.Election.ToListAsync());
         }
 
-        // GET: Elections/Details/5
-        [HttpGet("Elections/Details")]
+        // GET: Election/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,14 +47,15 @@ namespace PrefectVotingApplication.Controllers
             return View(election);
         }
 
-        // GET: Elections/Create
-        [HttpGet("Elections/Create")]
+        // GET: Election/Create
         public IActionResult Create()
         {
+            ViewBag.StatusList = new SelectList(Enum.GetValues(typeof(ElectionStatus)));
+
             return View();
         }
 
-        // POST: Elections/Create
+        // POST: Election/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -66,10 +68,11 @@ namespace PrefectVotingApplication.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.StatusList = new SelectList(Enum.GetValues(typeof(ElectionStatus)));
             return View(election);
         }
 
-        // GET: Elections/Edit/5
+        // GET: Election/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -82,10 +85,11 @@ namespace PrefectVotingApplication.Controllers
             {
                 return NotFound();
             }
+            ViewBag.StatusList = new SelectList(Enum.GetValues(typeof(ElectionStatus)));
             return View(election);
         }
 
-        // POST: Elections/Edit/5
+        // POST: Election/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -120,7 +124,7 @@ namespace PrefectVotingApplication.Controllers
             return View(election);
         }
 
-        // GET: Elections/Delete/5
+        // GET: Election/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -138,7 +142,7 @@ namespace PrefectVotingApplication.Controllers
             return View(election);
         }
 
-        // POST: Elections/Delete/5
+        // POST: Election/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
