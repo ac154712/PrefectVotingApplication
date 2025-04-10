@@ -67,7 +67,7 @@ namespace PrefectVotingApplication.Controllers
             if (!ModelState.IsValid)
             {
                 _context.Add(auditLog);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(); 
                 return RedirectToAction(nameof(Index));
             }
             ViewData["UserId"] = new SelectList(_context.User, "Id", "Id", auditLog.UserId);

@@ -5,7 +5,7 @@ SELECT TOP 1
 FROM votes v
 JOIN aspnetusers u on v.receiverid = u.id  -- this does a join to get student details
 
-WHERE v.electionid = 1 and u.roleid = 21     -- this will filter for election 1 and only students
+WHERE v.electionid = 1 and u.roleid = 1     -- this will filter for election 1 and only students
 
 GROUP BY u.firstname, u.lastname -- this will group votes by full name
 ORDER BY total_votes desc;  -- this will make it so that the top voter is at the top

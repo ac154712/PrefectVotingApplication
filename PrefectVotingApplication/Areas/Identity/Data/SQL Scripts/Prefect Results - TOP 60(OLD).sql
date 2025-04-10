@@ -6,7 +6,7 @@ SELECT TOP 60
 FROM votes v
 JOIN aspnetusers u on v.receiverid = u.id  -- this links each vote to a student
 
-WHERE v.electionid = 1 and u.roleid = 21-- this will make it so that only students in election 1 are shown
+WHERE v.electionid = 1 and u.roleid = 1-- this will make it so that only students in election 1 are shown
 
 GROUP BY u.firstname, u.lastname   -- this will group the votes per student
 ORDER BY total_votes desc;   -- this will show the most voted students first

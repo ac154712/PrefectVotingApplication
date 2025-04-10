@@ -7,7 +7,7 @@ JOIN aspnetusers u ON v.receiverid = u.id   -- this links each vote to the stude
 JOIN aspnetusers voter ON v.voterid = voter.id -- this gets the user who cast the vote
 JOIN role r ON voter.roleid = r.roleid-- this gets the voter's role to access their vote weight which we need because teachers vote are worth 20
 
-WHERE v.electionid = 1 AND u.roleid = 21 -- this filters for student candidates only and in election 1 only
+WHERE v.electionid = 1 AND u.roleid = 1 -- this filters for student candidates only and in election 1 only
 
 GROUP BY u.firstname, u.lastname -- this groups the votes per student
 ORDER BY total_votes DESC;-- this shows the most voted (weighted) students first
