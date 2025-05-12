@@ -11,7 +11,7 @@ using PrefectVotingApplication.Models;
 
 namespace PrefectVotingApplication.Controllers
 {
-    
+    [Authorize(Roles = "Admin")]
     public class AuditLogController : Controller
     {
         private readonly PrefectVotingApplicationDbContext _context;

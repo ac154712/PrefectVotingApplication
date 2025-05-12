@@ -6,11 +6,16 @@ var connectionString = builder.Configuration.GetConnectionString("PrefectVotingA
 
 builder.Services.AddDbContext<PrefectVotingApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<PrefectVotingApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<PrefectVotingApplicationDbContext>();
+builder.Services.AddIdentity<PrefectVotingApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<PrefectVotingApplicationDbContext>().AddDefaultTokenProviders();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/AccessDenied";
+});
 
 var app = builder.Build();
 
@@ -19,7 +24,11 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<PrefectVotingApplicationDbContext>();
-    DbInitializer.Initialize(context);
+    var userManager = services.GetRequiredService<UserManager<PrefectVotingApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var configuration = services.GetRequiredService<IConfiguration>();
+
+    await DbInitializer.InitializeAsync(context, userManager, roleManager, configuration);
 }
 
 // Configure the HTTP request pipeline.
@@ -43,4 +52,4 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run();
+await app.RunAsync();

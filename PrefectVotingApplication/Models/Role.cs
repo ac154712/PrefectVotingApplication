@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PrefectVotingApplication.Models
 {
-    public class Role
+    public class Role //i needed to make my own custom Role model instead of the Aspnet one already generated because i need extra properties like VoteWeight which is not-auth. Its better to seperate application logic roles(non-auth) to identity(auth) roles for overall flexibility, security and just clarity.
     {
         [Key]
         public int RoleId { get; set; }
@@ -23,7 +23,7 @@ namespace PrefectVotingApplication.Models
         {
             Student,
             Teacher,
-            Admin
+            Staff
 
         }
     }
