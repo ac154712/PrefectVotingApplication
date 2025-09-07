@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PrefectVotingApplication.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("PrefectVotingApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'PrefectVotingApplicationDbContextConnection' not found.");
+
+builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();//registers my emial sender to program
 
 builder.Services.AddDbContext<PrefectVotingApplicationDbContext>(options => options.UseSqlServer(connectionString));
 

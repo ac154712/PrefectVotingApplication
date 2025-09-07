@@ -28,7 +28,7 @@ public class PrefectVotingApplicationUser : IdentityUser
     public string ImagePath { get; set; } // store file path instead of binary data in database
 
     [StringLength(450, ErrorMessage = "Description must not exceed 600 characters.")]
-    public string? Description { get; set; }
+    public string? Description { get; set; } = "";
 
     [Required(ErrorMessage = "Role ID is required. ")]
     public int RoleId { get; set; }

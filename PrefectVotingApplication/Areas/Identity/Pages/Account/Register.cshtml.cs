@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
@@ -20,6 +21,9 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using PrefectVotingApplication.Areas.Identity.Data;
 using PrefectVotingApplication.Models;
+using PrefectVotingApplication.Areas.Identity.Pages.Services;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 namespace PrefectVotingApplication.Areas.Identity.Pages.Account
 {
@@ -31,13 +35,15 @@ namespace PrefectVotingApplication.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<PrefectVotingApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly PrefectVotingApplicationDbContext _context;
 
         public RegisterModel(
             UserManager<PrefectVotingApplicationUser> userManager,
             IUserStore<PrefectVotingApplicationUser> userStore,
             SignInManager<PrefectVotingApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            PrefectVotingApplicationDbContext context) 
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -45,6 +51,7 @@ namespace PrefectVotingApplication.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         [BindProperty]
@@ -87,14 +94,24 @@ namespace PrefectVotingApplication.Areas.Identity.Pages.Account
             public Role Role { get; set; } //Navigation property
         }
 
-
+        public IList<SelectListItem> Roles { get; set; }
+        public List<SelectListItem> RoleList { get; set; }
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            // Get roles from database
+            RoleList = _context.Role
+                .Select(r => new SelectListItem
+                {
+                    Value = r.RoleId.ToString(),
+                    Text = r.RoleName.ToString()
+                })
+                .ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync( string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -104,6 +121,14 @@ namespace PrefectVotingApplication.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                user.Email = Input.Email;              // important must set Email directly
+                user.Description = "";                 // avoid NULL insert
+                user.FirstName = Input.FirstName;      
+                user.LastName = Input.LastName;
+                user.ImagePath = "";
+                user.RoleId = Input.RoleId;
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
@@ -119,8 +144,8 @@ namespace PrefectVotingApplication.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    var message = ConfirmationEmailTemplate.BuildConfirmationEmail(Input.FirstName, callbackUrl);
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email", message);
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -138,7 +163,7 @@ namespace PrefectVotingApplication.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
+            // If we got this far, something failed, redisplay forms
             return Page();
         }
 
