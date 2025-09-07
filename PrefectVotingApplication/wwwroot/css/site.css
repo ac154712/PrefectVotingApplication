@@ -20,3 +20,38 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+
+.bottom-footer {
+    position: fixed;
+    bottom: -60px; /* hide it below viewport initially */
+    width: 100%;
+    background-color: black;
+    transition: bottom 0.3s;
+}
+
+    .bottom-footer.show {
+        bottom: 0;
+    }
+
+.navbar-nav img {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+    .navbar-nav img:hover {
+        transform: scale(1.1);
+    }
+
+.card {
+    border-radius: 12px;
+    transition: transform 0.2s;
+}
+
+    .card:hover {
+        transform: translateY(-4px);
+    }
+
+.table td, .table th {
+    vertical-align: middle;
+}

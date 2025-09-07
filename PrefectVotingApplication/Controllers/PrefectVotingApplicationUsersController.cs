@@ -22,11 +22,13 @@ namespace PrefectVotingApplication.Controllers
             _context = context;
         }
 
+ 
         // GET: PrefectVotingApplicationUsers
         [HttpGet("")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string viewMode = "grid")
         {
             var prefectVotingApplicationDbContext = _context.User.Include(p => p.Role);
+            ViewData["ViewMode"] = viewMode; // pass current mode
             return View(await prefectVotingApplicationDbContext.ToListAsync());
         }
 
