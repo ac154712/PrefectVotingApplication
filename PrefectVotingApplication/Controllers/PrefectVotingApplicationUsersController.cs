@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PrefectVotingApplication.Areas.Identity.Data;
 
@@ -25,10 +26,60 @@ namespace PrefectVotingApplication.Controllers
  
         // GET: PrefectVotingApplicationUsers
         [HttpGet("")]
-        public async Task<IActionResult> Index(string viewMode = "grid")
+        public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber, string viewMode = "grid")
         {
             var prefectVotingApplicationDbContext = _context.User.Include(p => p.Role);
+            ViewData["CurrentFilter"] = searchString;
             ViewData["ViewMode"] = viewMode; // pass current mode
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var users = from u in _context.User.Include(u => u.Role)
+                        select u;
+
+            // search
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(u =>
+                    u.FirstName.Contains(searchString) ||
+                    u.LastName.Contains(searchString) ||
+                    u.Email.Contains(searchString));
+            }
+
+            // sort
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    users = users.OrderByDescending(u => u.FirstName);
+                    break;
+                default:
+                    users = users.OrderBy(u => u.FirstName);
+                    break;
+            }
+
+            //pagination
+            int pageSize = 16;
+            int pageIndex = pageNumber ?? 1;
+            int totalItems = await users.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var pagedUsers = await users
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewData["PageNumber"] = pageIndex;
+            ViewData["TotalPages"] = totalPages;
+
+            return View(pagedUsers);
             return View(await prefectVotingApplicationDbContext.ToListAsync());
         }
 

@@ -1,9 +1,28 @@
 ﻿@model IEnumerable<PrefectVotingApplication.Areas.Identity.Data.PrefectVotingApplicationUser>
 @{
     ViewData["Title"] = "Index";
+    var pageNumber = (int)ViewData["PageNumber"];
+    var totalPages = (int)ViewData["TotalPages"];
     var viewMode = ViewData["ViewMode"]?.ToString() ?? "grid";
-}
 
+}
+<style>
+    .pagination-footer {
+        margin-top: auto;
+        padding: 20px 0;
+        text-align: center;
+    }
+</style>
+@* search *@
+<form asp-action="Index" method="get" class="mb-3">
+    <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search..." class="form-control d-inline" style="width:250px;" />
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a asp-action="Index" class="btn btn-secondary">Reset</a>
+</form>
+
+
+
+@* made a grid  view *@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Select Your Prefects</h2>
 
@@ -15,6 +34,7 @@
 
 <hr />
 
+@* adds prodile if user doesn't have in grid view' *@
 @if (viewMode == "grid")
 {
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
@@ -65,3 +85,16 @@ else if (viewMode == "list")
         </tbody>
     </table>
 }
+
+<div class="pagination-footer">
+    @if (pageNumber > 1)
+    {
+        <a asp-action="Index" asp-route-pageNumber="@(pageNumber - 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-viewMode="@ViewData["ViewMode"]" class="btn btn-outline-primary me-2">Previous</a>
+    }
+    <span>Page @pageNumber of @totalPages</span>
+    @if (pageNumber < totalPages)
+    {
+        <a asp-action="Index" asp-route-pageNumber="@(pageNumber + 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-viewMode="@ViewData["ViewMode"]" class="btn btn-outline-primary ms-2">Next</a>
+    }
+</div>
+
