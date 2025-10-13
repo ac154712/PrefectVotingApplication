@@ -57,6 +57,38 @@ namespace PrefectVotingApplication.Controllers
             return View(await prefectVotingApplicationDbContext.ToListAsync());
         }
 
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AllVotes(string searchString, int pageNumber = 1, string viewMode = "grid")
+        {
+            int pageSize = 8; // Adjust if you want fewer/more per page
+
+            var votesQuery = _context.Votes.Include(v => v.Voter).Include(v => v.Receiver).OrderByDescending(v => v.Timestamp).AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                votesQuery = votesQuery.Where(v =>
+                    v.Voter.FirstName.Contains(searchString) ||
+                    v.Voter.LastName.Contains(searchString) ||
+                    v.Receiver.FirstName.Contains(searchString) ||
+                    v.Receiver.LastName.Contains(searchString));
+            }
+
+            var totalVotes = await votesQuery.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalVotes / (double)pageSize);
+
+            var votes = await votesQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewData["PageNumber"] = pageNumber;
+            ViewData["TotalPages"] = totalPages;
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["ViewMode"] = viewMode;
+
+            return View(votes);
+        }
+
         // GET: Votes/Details/5
         public async Task<IActionResult> Details(int? id)
         {

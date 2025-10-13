@@ -22,10 +22,13 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Users" asp-action="Index">Students</a>
+                            <a class="nav-link text-white" asp-area="" asp-controller="Users" asp-action="Index">Start Voting</a>
                         </li>
+                        @* Show only for Admin users *@
+                        @if (User.IsInRole("Admin"))
+                        {
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Votes" asp-action="Index">Votes</a>
+                            <a class="nav-link text-white" asp-area="" asp-controller="Votes" asp-action="Index">VotesLog</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Election" asp-action="Index">Election(Year)</a>
@@ -36,6 +39,10 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="AuditLog" asp-action="Index">Audit Log</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Votes" asp-action="AllVotes">Vote List</a>
+                        </li>
+                        }
                     </ul>
                 </div>
                 <partial name="_LoginPartial.cshtml" />
