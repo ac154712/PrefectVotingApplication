@@ -6,12 +6,23 @@
     var viewMode = ViewData["ViewMode"]?.ToString() ?? "grid";
 
 }
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">@TempData["Message"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div id="success-message" class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
 <style>
     .pagination-footer {
         margin-top: auto;
         padding: 20px 0;
         text-align: center;
     }
+
 </style>
 @* search *@
 <form asp-action="Index" method="get" class="mb-3">
@@ -44,7 +55,11 @@
                          class="card-img-top" style="height:200px; object-fit:cover;" />
                     <div class="card-body">
                         <h5 class="card-title">@PrefectVotingApplicationUser.FirstName @PrefectVotingApplicationUser.LastName</h5>
-                        <button class="btn btn-primary">Vote</button>
+                        <form asp-controller="Votes" asp-action="Vote" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="receiverId" value="@PrefectVotingApplicationUser.Id" />
+                            <button type="submit" class="btn btn-primary">Vote</button>
+                        </form>
                         <a asp-action ="Details" asp-route-id="@PrefectVotingApplicationUser.Id" button class="btn btn-outline-secondary">...</a>
                     </div>
                 </div>
@@ -110,4 +125,3 @@ else if (viewMode == "list")
         <a asp-action="Index" asp-route-pageNumber="@(pageNumber + 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-viewMode="@ViewData["ViewMode"]" class="btn btn-outline-primary ms-2">Next</a>
     }
 </div>
-

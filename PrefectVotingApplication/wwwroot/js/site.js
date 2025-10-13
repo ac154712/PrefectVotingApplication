@@ -12,3 +12,15 @@ window.addEventListener('scroll', function () {
         footer.classList.remove('show');
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const message = document.getElementById("success-message");
+    if (message) {
+        //this is for notification saying "successfully voted"
+        setTimeout(() => {
+            message.style.transition = "opacity 0.5s ease"; // fade out after 2 seconds
+            message.style.opacity = "0";
+            setTimeout(() => message.remove(), 500); // remove after fade
+        }, 2000);
+    }
+});

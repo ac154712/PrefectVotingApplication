@@ -129,6 +129,53 @@ namespace PrefectVotingApplication.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Vote(string receiverId)
+        {
+            var voterEmail = User.Identity?.Name;
+            var voter = await _context.User.FirstOrDefaultAsync(u => u.Email == voterEmail);
+
+            if (voter == null || string.IsNullOrEmpty(receiverId))
+            {
+                TempData["Message"] = "Vote failed. Invalid voter or receiver.";
+                return RedirectToAction("Index", "PrefectVotingApplicationUsers"); // or your main voting page
+            }
+
+            var activeElection = await _context.Election
+                .OrderByDescending(e => e.ElectionId)
+                .FirstOrDefaultAsync();
+
+            if (activeElection == null)
+            {
+                TempData["Message"] = "No active election found.";
+                return RedirectToAction("Index", "PrefectVotingApplicationUsers");
+            }
+
+            // prevents duplicate voting for same receiver
+            bool alreadyVoted = await _context.Votes
+                .AnyAsync(v => v.VoterId == voter.Id && v.ReceiverId == receiverId && v.ElectionId == activeElection.ElectionId);
+
+            if (alreadyVoted)
+            {
+                TempData["Message"] = "You have already voted for this prefect.";
+                return RedirectToAction("Index", "PrefectVotingApplicationUsers");
+            }
+
+            var vote = new Votes
+            {
+                VoterId = voter.Id,
+                ReceiverId = receiverId,
+                ElectionId = activeElection.ElectionId,
+                Timestamp = DateTime.Now
+            };
+
+            _context.Votes.Add(vote);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Vote successfully recorded!";
+            return RedirectToAction("Index", "PrefectVotingApplicationUsers");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("VoteId,VoterId,ReceiverId,ElectionId,Timestamp")] Votes votes)
         {
             if (id != votes.VoteId)
