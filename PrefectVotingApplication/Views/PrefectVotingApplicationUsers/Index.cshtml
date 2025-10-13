@@ -20,8 +20,6 @@
     <a asp-action="Index" class="btn btn-secondary">Reset</a>
 </form>
 
-
-
 @* made a grid  view *@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Select Your Prefects</h2>
@@ -60,8 +58,23 @@ else if (viewMode == "list")
         <thead>
             <tr>
                 <th>Student ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
+                <th> @* sort function *@
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["NameSortParm"]"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       asp-route-viewMode="@ViewData["ViewMode"]">
+                        First Name
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["LastNameSortParm"]"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       asp-route-viewMode="@ViewData["ViewMode"]">
+                        Last Name
+                    </a>
+                </th>
+
                 <th>Email</th>
                 <th>Description</th>
                 <th></th>

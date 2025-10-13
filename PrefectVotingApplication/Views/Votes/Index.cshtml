@@ -6,9 +6,11 @@
 
 <h1>Index</h1>
 
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -25,7 +27,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Voter.Id)
@@ -45,3 +47,33 @@
 }
     </tbody>
 </table>
+
+<div class="d-flex justify-content-center mt-3">
+    @if ((int)ViewData["PageNumber"] > 1)
+    {
+        <a asp-action="Index"
+           asp-route-pageNumber="@((int)ViewData["PageNumber"] - 1)"
+           asp-route-searchString="@ViewData["CurrentFilter"]"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           class="btn btn-outline-primary me-2">Previous</a>
+    }
+    else
+    {
+        <button class="btn btn-outline-secondary me-2" disabled>Previous</button>
+    }
+
+    <span>Page @ViewData["PageNumber"] of @ViewData["TotalPages"]</span>
+
+    @if ((int)ViewData["PageNumber"] < (int)ViewData["TotalPages"])
+    {
+        <a asp-action="Index"
+           asp-route-pageNumber="@((int)ViewData["PageNumber"] + 1)"
+           asp-route-searchString="@ViewData["CurrentFilter"]"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           class="btn btn-outline-primary ms-2">Next</a>
+    }
+    else
+    {
+        <button class="btn btn-outline-secondary ms-2" disabled>Next</button>
+    }
+</div>

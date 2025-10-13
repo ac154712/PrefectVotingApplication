@@ -22,9 +22,38 @@ namespace PrefectVotingApplication.Controllers
         }
 
         // GET: Votes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageNumber, string sortOrder)
         {
             var prefectVotingApplicationDbContext = _context.Votes.Include(v => v.Receiver).Include(v => v.Voter);
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
+
+          
+            var votes = _context.Votes.Include(v => v.Receiver).Include(v => v.Voter).AsQueryable();
+
+
+            // sorti by recency
+            switch (sortOrder)
+            {
+                case "date_desc":
+                    votes = votes.OrderBy(v => v.Timestamp); // oldest first
+                    break;
+                default:
+                    votes = votes.OrderByDescending(v => v.Timestamp); // newest first
+                    break;
+            }
+
+            // pagination
+            int pageSize = 10;
+            int totalCount = await votes.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            int currentPage = pageNumber ?? 1;
+
+            votes = votes.Skip((currentPage - 1) * pageSize).Take(pageSize);
+            // pass data to view
+            ViewData["PageNumber"] = currentPage;
+            ViewData["TotalPages"] = totalPages;
+
             return View(await prefectVotingApplicationDbContext.ToListAsync());
         }
 

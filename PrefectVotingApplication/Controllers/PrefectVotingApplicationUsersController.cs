@@ -28,6 +28,9 @@ namespace PrefectVotingApplication.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber, string viewMode = "grid")
         {
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["LastNameSortParm"] = sortOrder == "LastName" ? "lastname_desc" : "LastName";
             var prefectVotingApplicationDbContext = _context.User.Include(p => p.Role);
             ViewData["CurrentFilter"] = searchString;
             ViewData["ViewMode"] = viewMode; // pass current mode
@@ -60,6 +63,12 @@ namespace PrefectVotingApplication.Controllers
                 case "name_desc":
                     users = users.OrderByDescending(u => u.FirstName);
                     break;
+                case "LastName":
+                    users = users.OrderBy(u => u.LastName);
+                    break;
+                case "lastname_desc":
+                    users = users.OrderByDescending(u => u.LastName);
+                    break;
                 default:
                     users = users.OrderBy(u => u.FirstName);
                     break;
@@ -71,11 +80,7 @@ namespace PrefectVotingApplication.Controllers
             int totalItems = await users.CountAsync();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
-            var pagedUsers = await users
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
+            var pagedUsers = await users.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
             ViewData["PageNumber"] = pageIndex;
             ViewData["TotalPages"] = totalPages;
 
