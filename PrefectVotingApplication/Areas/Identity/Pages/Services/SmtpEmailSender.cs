@@ -7,14 +7,21 @@ using System.Threading.Tasks;
 public class SmtpEmailSender : IEmailSender
 {
     private readonly IConfiguration _config;
+    private readonly bool _disableEmail;
 
     public SmtpEmailSender(IConfiguration config)
     {
         _config = config;
+        _disableEmail = true; // Set to true to disable email sending
     }
 
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
+        if (_disableEmail)
+        {
+            // Email sending is disabled
+            return;
+        }
         var smtpHost = _config["Smtp:Host"];
         var smtpPort = int.Parse(_config["Smtp:Port"]);
         var smtpUser = _config["Smtp:Username"];
@@ -39,6 +46,7 @@ public class SmtpEmailSender : IEmailSender
             mailMessage.To.Add(email);
 
             await client.SendMailAsync(mailMessage);
+            
         }
     }
 }
