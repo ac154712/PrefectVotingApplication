@@ -72,7 +72,7 @@ else if (viewMode == "list")
     <table class="table table-hover">
         <thead>
             <tr>
-                @if (User.IsInRole("Admin")) // student will only see first name, last, and description
+                @if (User.IsInRole("Student")) // student will only see first name, last, and description
                 {
                     <th>
                         @* sorts teh first name alphabetical *@
@@ -123,7 +123,10 @@ else if (viewMode == "list")
                 }
                 else
                 {
-                    <th>Student ID</th>
+                    if (User.IsInRole("Admin"))
+                    {
+                        <th>Student ID</th>
+                    }
                     <th>
                         @* sorts teh first name alphabetical *@
                         <a asp-action="Index"
@@ -180,7 +183,7 @@ else if (viewMode == "list")
             @foreach (var PrefectVotingApplicationUser in Model)
             {
                 <tr>
-                    @if (User.IsInRole("Admin"))
+                    @if (User.IsInRole("Student"))
                     {
                         <td>@PrefectVotingApplicationUser.FirstName</td>
                         <td>@PrefectVotingApplicationUser.LastName</td>
@@ -188,7 +191,8 @@ else if (viewMode == "list")
                         <td class="text-end" style="padding-right: 30px;"> @* moves buttons to far right but with padding so its not too close *@
                             <form asp-controller="Votes" asp-action="Vote" asp-route-viewMode="list" method="post" class="d-inline" >
                                 @Html.AntiForgeryToken()
-                                <input type="hidden" name="receiverId" value="@PrefectVotingApplicationUser.Id" />
+                                <input type="hidden" name="receiverId" value="@PrefectVotingApplicationUser.Id"/>
+                                <input type="hidden" name="viewMode" value="@ViewData["ViewMode"]"/>
                                 <button type="submit" class="btn btn-primary" style="width:150px; height:34px;line-height:15px;">Vote</button>
 
                             </form>
@@ -199,14 +203,24 @@ else if (viewMode == "list")
                     }
                     else
                     {
-                        <td>@PrefectVotingApplicationUser.Id</td>
+                        if (User.IsInRole("Admin"))//only admin
+                        {
+                            <td>@PrefectVotingApplicationUser.Id</td>
+                        }
                         <td>@PrefectVotingApplicationUser.FirstName</td>
                         <td>@PrefectVotingApplicationUser.LastName</td>
                         <td>@PrefectVotingApplicationUser.Email</td>
                         <td>@PrefectVotingApplicationUser.Description</td>
                         <td>
-                            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@PrefectVotingApplicationUser.Id">Vote</a>
-                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@PrefectVotingApplicationUser.Id">✖</a>
+                            <form asp-controller="Votes" asp-action="Vote" asp-route-viewMode="list" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="receiverId" value="@PrefectVotingApplicationUser.Id" />
+                                <input type="hidden" name="viewMode" value="@ViewData["ViewMode"]" />
+                                <button type="submit" class="btn btn-primary" style="width:150px; height:34px;line-height:15px;">Vote</button>
+
+                            </form>
+                            @* <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@PrefectVotingApplicationUser.Id">Vote</a> *@
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@PrefectVotingApplicationUser.Id">x</a>
                         </td>
                     }
                     

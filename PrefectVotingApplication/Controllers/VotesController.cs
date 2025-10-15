@@ -148,7 +148,7 @@ namespace PrefectVotingApplication.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Vote(string receiverId)
+        public async Task<IActionResult> Vote(string receiverId, string viewMode)
         {
             var voterEmail = User.Identity?.Name;
             var voter = await _context.User.FirstOrDefaultAsync(u => u.Email == voterEmail);
@@ -156,7 +156,7 @@ namespace PrefectVotingApplication.Controllers
             if (voter == null || string.IsNullOrEmpty(receiverId))
             {
                 TempData["Message"] = "Vote failed. Invalid voter or receiver.";
-                return RedirectToAction("Index", "PrefectVotingApplicationUsers"); // or your main voting page
+                return RedirectToAction("Index", "PrefectVotingApplicationUsers", new { viewMode = viewMode ?? "grid" }); // or your main voting page
             }
 
             var activeElection = await _context.Election
@@ -166,7 +166,7 @@ namespace PrefectVotingApplication.Controllers
             if (activeElection == null)
             {
                 TempData["Message"] = "No active election found.";
-                return RedirectToAction("Index", "PrefectVotingApplicationUsers");
+                return RedirectToAction("Index", "PrefectVotingApplicationUsers", new { viewMode = viewMode ?? "grid" });
             }
 
             // prevents duplicate voting for same receiver
@@ -176,7 +176,7 @@ namespace PrefectVotingApplication.Controllers
             if (alreadyVoted)
             {
                 TempData["Message"] = "You have already voted for this prefect.";
-                return RedirectToAction("Index", "PrefectVotingApplicationUsers");
+                return RedirectToAction("Index", "PrefectVotingApplicationUsers", new { viewMode = viewMode ?? "grid" });
             }
 
             var vote = new Votes
@@ -191,7 +191,7 @@ namespace PrefectVotingApplication.Controllers
             await _context.SaveChangesAsync();
 
             TempData["Message"] = "Vote successfully recorded!";
-            return RedirectToAction("Index", "PrefectVotingApplicationUsers");
+            return RedirectToAction("Index", "PrefectVotingApplicationUsers", new { viewMode = viewMode ?? "grid" });
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

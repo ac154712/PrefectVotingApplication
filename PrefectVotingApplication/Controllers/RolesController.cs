@@ -91,6 +91,7 @@ namespace PrefectVotingApplication.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("RoleId,RoleName,VoteWeight")] Role role)
         {
             if (id != role.RoleId)
