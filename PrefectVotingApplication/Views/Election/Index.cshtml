@@ -4,11 +4,19 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Elections</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a asp-action="Create" class="btn btn-outline-primary">Create New Election</a> @* button instead of default "Create New"" *@
+
+    <form asp-action="Index" method="get" class="d-flex">
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search by title..." 
+               class="form-control me-2" style="width: 250px;" />
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Reset</a>
+    </form>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -42,7 +50,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
-            <td>
+                <td class="text-end" style="padding-right: 30px;">
                 <a asp-action="Edit" asp-route-id="@item.ElectionId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ElectionId">Details</a> |
                 <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.ElectionId">Delete</a>
@@ -51,3 +59,31 @@
 }
     </tbody>
 </table>
+
+<div class="d-flex justify-content-center mt-3">
+    @if ((int)ViewData["PageNumber"] > 1)
+    {
+        <a asp-action="Index"
+           asp-route-pageNumber="@((int)ViewData["PageNumber"] - 1)"
+           asp-route-searchString="@ViewData["CurrentFilter"]"
+           class="btn btn-outline-primary me-2">Previous</a>
+    }
+    else
+    {
+        <button class="btn btn-outline-secondary me-2" disabled>Previous</button>
+    }
+
+    <span>Page @ViewData["PageNumber"] of @ViewData["TotalPages"]</span>
+
+    @if ((int)ViewData["PageNumber"] < (int)ViewData["TotalPages"])
+    {
+        <a asp-action="Index"
+           asp-route-pageNumber="@((int)ViewData["PageNumber"] + 1)"
+           asp-route-searchString="@ViewData["CurrentFilter"]"
+           class="btn btn-outline-primary ms-2">Next</a>
+    }
+    else
+    {
+        <button class="btn btn-outline-secondary ms-2" disabled>Next</button>
+    }
+</div>

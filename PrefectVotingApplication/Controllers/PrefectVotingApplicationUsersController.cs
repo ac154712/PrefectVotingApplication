@@ -33,7 +33,7 @@ namespace PrefectVotingApplication.Controllers
             ViewData["LastNameSortParm"] = sortOrder == "LastName" ? "lastname_desc" : "LastName";
             var prefectVotingApplicationDbContext = _context.User.Include(p => p.Role);
             ViewData["CurrentFilter"] = searchString;
-            ViewData["ViewMode"] = viewMode; // pass current mode
+            ViewData["ViewMode"] = viewMode; 
             if (searchString != null)
             {
                 pageNumber = 1;
@@ -57,7 +57,7 @@ namespace PrefectVotingApplication.Controllers
                     u.Email.Contains(searchString));
             }
 
-            // sort
+            // sortn logiv
             switch (sortOrder)
             {
                 case "name_desc":

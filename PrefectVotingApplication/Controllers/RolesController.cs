@@ -46,28 +46,29 @@ namespace PrefectVotingApplication.Controllers
         }
 
         // GET: Roles/Create
-        public IActionResult Create()
-        {
-            ViewBag.RoleNameList = new SelectList(Enum.GetValues(typeof(Role.RoleNames)));
-            return View();
-        }
+        //public IActionResult Create()
+        //{
+        //    ViewBag.RoleNameList = new SelectList(Enum.GetValues(typeof(Role.RoleNames)));
+        //    return View();
+        //}
 
-        // POST: Roles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RoleId,RoleName,VoteWeight")] Role role)
-        {
-            if (!ModelState.IsValid)
-            {
-                _context.Add(role);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewBag.RoleNameList = new SelectList(Enum.GetValues(typeof(Role.RoleNames)));
-            return View(role);
-        }
+        //// POST: Roles/Create
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("RoleId,RoleName,VoteWeight")] Role role)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        _context.Add(role);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewBag.RoleNameList = new SelectList(Enum.GetValues(typeof(Role.RoleNames)));
+        //    return View(role);
+        //} 
+        //no new roles should be created
 
         // GET: Roles/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -121,38 +122,38 @@ namespace PrefectVotingApplication.Controllers
             return View(role);
         }
 
-        // GET: Roles/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //// GET: Roles/Delete/5
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var role = await _context.Role
-                .FirstOrDefaultAsync(m => m.RoleId == id);
-            if (role == null)
-            {
-                return NotFound();
-            }
+        //    var role = await _context.Role
+        //        .FirstOrDefaultAsync(m => m.RoleId == id);
+        //    if (role == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(role);
-        }
+        //    return View(role);
+        //}
 
-        // POST: Roles/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var role = await _context.Role.FindAsync(id);
-            if (role != null)
-            {
-                _context.Role.Remove(role);
-            }
+        //// POST: Roles/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    var role = await _context.Role.FindAsync(id);
+        //    if (role != null)
+        //    {
+        //        _context.Role.Remove(role);
+        //    }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         private bool RoleExists(int id)
         {

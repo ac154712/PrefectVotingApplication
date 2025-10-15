@@ -22,14 +22,31 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
+                            @* by default everyone can see the prefects/student page *@
                             <a class="nav-link text-white" asp-area="" asp-controller="Users" asp-action="Index">Students</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Votes" asp-action="AllVotes">Vote List</a>
-                        </li>
-                        @* Show only for Admin users *@
-                        @if (User.IsInRole("Admin"))
+                        </li> 
+                        @if (User.IsInRole("Teacher")) //teachers can view only all the votes in the system so if they want to count manually
                         {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Votes" asp-action="AllVotes">All Votes</a>
+                        </li>}
+
+                        @if (User.IsInRole("Staff")) //school staff can see all votes and make elections
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Votes" asp-action="AllVotes">All Votes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Election" asp-action="Index">Election(Year)</a>
+                            </li>
+                        }
+                        
+                        
+                        @if (User.IsInRole("Admin")) // admin can see everything
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Votes" asp-action="AllVotes">All Votes</a>
+                            </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Votes" asp-action="Index">VotesLog</a>
                         </li>

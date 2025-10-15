@@ -72,26 +72,107 @@ else if (viewMode == "list")
     <table class="table table-hover">
         <thead>
             <tr>
-                <th>Student ID</th>
-                <th> @* sort function *@
-                    <a asp-action="Index"
-                       asp-route-sortOrder="@ViewData["NameSortParm"]"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-viewMode="@ViewData["ViewMode"]">
-                        First Name
-                    </a>
-                </th>
-                <th>
-                    <a asp-action="Index"
-                       asp-route-sortOrder="@ViewData["LastNameSortParm"]"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-viewMode="@ViewData["ViewMode"]">
-                        Last Name
-                    </a>
-                </th>
+                @if (User.IsInRole("Admin")) // student will only see first name, last, and description
+                {
+                    <th>
+                        @* sorts teh first name alphabetical *@
+                        <a asp-action="Index"
+                           asp-route-sortOrder="@ViewData["NameSortParm"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-viewMode="@ViewData["ViewMode"]">
+                            First Name
+                            @{
+                                var currentSort = (ViewData["NameSortParm"]);
+                                if (currentSort == "name_desc") //adds (A-z) just so user can know if its ascending alphabetically or not
+                                {
+                                    <span> (A-Z) </span>
+                                }
+                                else
+                                {
+                                    <span> (Z-A)</span> @*same thing bu *@
+                                }
+                            }
+                        </a>
+                    </th>
+                    <th>
+                        <a asp-action="Index"
+                           asp-route-sortOrder="@ViewData["LastNameSortParm"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-viewMode="@ViewData["ViewMode"]">
+                            Last Name
+                            @{
+                                var sortOrder = (ViewData["LastNameSortParm"]);
+                                if (sortOrder == "LastName")
+                                {
+                                    <span> (Z-A)</span>
+                                }
+                                if (sortOrder == "lastname_desc")
+                                {
+                                    <span> (A-Z)</span>
+                                }
+                                else
+                                {
+                                    <span> </span>
+                                }
 
-                <th>Email</th>
-                <th>Description</th>
+                            }
+                        </a>
+                    </th>
+
+                    <th>Description</th>
+                }
+                else
+                {
+                    <th>Student ID</th>
+                    <th>
+                        @* sorts teh first name alphabetical *@
+                        <a asp-action="Index"
+                           asp-route-sortOrder="@ViewData["NameSortParm"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-viewMode="@ViewData["ViewMode"]">
+                            First Name
+                            @{
+                                var currentSort = (ViewData["NameSortParm"]);
+                                if (currentSort == "name_desc") //adds (A-z) just so user can know if its ascending alphabetically or not
+                                {
+                                    <span> (A-Z) </span>
+                                }
+                                else
+                                {
+                                    <span> (Z-A)</span> @*same thing bu *@
+                                }
+                            }
+                        </a>
+                    </th>
+                    <th>
+                        <a asp-action="Index"
+                           asp-route-sortOrder="@ViewData["LastNameSortParm"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-viewMode="@ViewData["ViewMode"]">
+                            Last Name
+                            @{
+                                var sortOrder = (ViewData["LastNameSortParm"]);
+                                if (sortOrder == "LastName")
+                                {
+                                    <span> (Z-A)</span>
+                                }
+                                if (sortOrder == "lastname_desc")
+                                {
+                                    <span> (A-Z)</span>
+                                }
+                                else
+                                {
+                                    <span> </span>
+                                }
+
+                            }
+                        </a>
+                    </th>
+
+                    <th>Email</th>
+                    <th>Description</th>
+                }
+                
                 <th></th>
             </tr>
         </thead>
@@ -99,22 +180,43 @@ else if (viewMode == "list")
             @foreach (var PrefectVotingApplicationUser in Model)
             {
                 <tr>
-                    <td>@PrefectVotingApplicationUser.Id</td>
-                    <td>@PrefectVotingApplicationUser.FirstName</td>
-                    <td>@PrefectVotingApplicationUser.LastName</td>
-                    <td>@PrefectVotingApplicationUser.Email</td>
-                    <td>@PrefectVotingApplicationUser.Description</td>
-                    <td>
-                        <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@PrefectVotingApplicationUser.Id">Vote</a>
-                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@PrefectVotingApplicationUser.Id">✖</a>
-                    </td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <td>@PrefectVotingApplicationUser.FirstName</td>
+                        <td>@PrefectVotingApplicationUser.LastName</td>
+                        <td>@PrefectVotingApplicationUser.Description</td>
+                        <td class="text-end" style="padding-right: 30px;"> @* moves buttons to far right but with padding so its not too close *@
+                            <form asp-controller="Votes" asp-action="Vote" asp-route-viewMode="list" method="post" class="d-inline" >
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="receiverId" value="@PrefectVotingApplicationUser.Id" />
+                                <button type="submit" class="btn btn-primary" style="width:150px; height:34px;line-height:15px;">Vote</button>
+
+                            </form>
+                            @* <a class="btn btn-sm btn-primary" asp-controller="Votes" asp-action="Vote" method="post" asp-route-id="@PrefectVotingApplicationUser.Id"> Vote </a> *@
+
+                            @* <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@PrefectVotingApplicationUser.Id">✖</a> *@
+                        </td>
+                    }
+                    else
+                    {
+                        <td>@PrefectVotingApplicationUser.Id</td>
+                        <td>@PrefectVotingApplicationUser.FirstName</td>
+                        <td>@PrefectVotingApplicationUser.LastName</td>
+                        <td>@PrefectVotingApplicationUser.Email</td>
+                        <td>@PrefectVotingApplicationUser.Description</td>
+                        <td>
+                            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@PrefectVotingApplicationUser.Id">Vote</a>
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@PrefectVotingApplicationUser.Id">✖</a>
+                        </td>
+                    }
+                    
                 </tr>
             }
         </tbody>
     </table>
 }
 
-<div class="pagination-footer">
+<div class=" pagination-footer" d-flex justify-content-center align-items-center">
     @if (pageNumber > 1)
     {
         <a asp-action="Index" asp-route-pageNumber="@(pageNumber - 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-viewMode="@ViewData["ViewMode"]" class="btn btn-outline-primary me-2">Previous</a>

@@ -3,10 +3,9 @@
     ViewData["Title"] = "AllVotes";
     var pageNumber = (int)ViewData["PageNumber"];
     var totalPages = (int)ViewData["TotalPages"];
-    var viewMode = ViewData["ViewMode"]?.ToString() ?? "grid";
 }
 
-<h2>All Votes</h2>
+<h1>All Votes</h1>
 
 <form asp-action="AllVotes" method="get" class="mb-3">
     <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search by voter or receiver..." class="form-control d-inline" style="width:250px;" />
@@ -14,41 +13,7 @@
     <a asp-action="AllVotes" class="btn btn-secondary">Reset</a>
 </form>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <div></div>
-    <div>
-        <a asp-action="AllVotes" asp-route-viewMode="grid" class="btn btn-outline-dark me-2 @(viewMode=="grid" ? "active" : "")">Grid View</a>
-        <a asp-action="AllVotes" asp-route-viewMode="list" class="btn btn-outline-dark @(viewMode=="list" ? "active" : "")">List View</a>
-    </div>
-</div>
 
-<hr />
-
-@if (viewMode == "grid")
-{
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-        @foreach (var vote in Model)
-        {
-            <div class="col">
-                <div class="card h-100 text-center shadow-sm">
-                    <img src="@(string.IsNullOrEmpty(vote.Receiver?.ImagePath) ? Url.Content("~/images/user-default.png") : Url.Content(vote.Receiver.ImagePath))"
-                         class="card-img-top" style="height:200px; object-fit:cover;" />
-                    <div class="card-body">
-                        <h5 class="card-title">@vote.Receiver.FirstName @vote.Receiver.LastName</h5>
-                        <p class="card-text text-muted mb-1">
-                            <strong>Voted By:</strong> @vote.Voter.FirstName @vote.Voter.LastName
-                        </p>
-                        <p class="card-text">
-                            <small>@vote.Timestamp.ToString("g")</small>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-}
-else if (viewMode == "list")
-{
     <table class="table table-hover">
         <thead>
             <tr>
@@ -70,9 +35,8 @@ else if (viewMode == "list")
             }
         </tbody>
     </table>
-}
 
-<div class="pagination-footer mt-4">
+<div class=" pagination-footer d-flex justify-content-center align-items-center">
     @if (pageNumber > 1)
     {
         <a asp-action="AllVotes" asp-route-pageNumber="@(pageNumber - 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-viewMode="@ViewData["ViewMode"]" class="btn btn-outline-primary me-2">Previous</a>
@@ -83,4 +47,3 @@ else if (viewMode == "list")
         <a asp-action="AllVotes" asp-route-pageNumber="@(pageNumber + 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-viewMode="@ViewData["ViewMode"]" class="btn btn-outline-primary ms-2">Next</a>
     }
 </div>
-}

@@ -24,9 +24,36 @@ namespace PrefectVotingApplication.Controllers
         }
 
         // GET: Election
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
-            return View(await _context.Election.ToListAsync());
+            var elections = _context.Election.AsQueryable();
+
+            // --- SEARCH ---
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                elections = elections.Where(e => e.ElectionTitle.Contains(searchString));
+            }
+
+            // --- SORT BY NEWEST (default) ---
+            elections = elections.OrderByDescending(e => e.StartDate);
+
+            // --- PAGINATION ---
+            int pageSize = 10;
+            int currentPage = pageNumber ?? 1;
+            int totalCount = await elections.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var pageItems = await elections
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            // --- PASS TO VIEW ---
+            ViewData["PageNumber"] = currentPage;
+            ViewData["TotalPages"] = totalPages;
+            ViewData["CurrentFilter"] = searchString;
+
+            return View(pageItems);
         }
 
         // GET: Election/Details/5
