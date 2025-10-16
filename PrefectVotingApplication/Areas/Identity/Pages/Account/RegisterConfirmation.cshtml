@@ -11,10 +11,12 @@
     </p>
 
     <p class="mt-4">
-        After confirming your account, you can log in below.
+        @* <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a> <br> *@
+        Please confirm your account.@* After confirming your account, you can log in below. *@
     </p>
+    <a id="confirm-link" class="btn btn-primary mt-2 px-4 py-2" href="@Model.EmailConfirmationUrl ">Click here to confirm your account</a>
 
-    <a asp-page="/Account/Login" class="btn btn-primary mt-2 px-4 py-2">
+    @* <a asp-page="/Account/Login"  class="btn btn-primary mt-2 px-4 py-2">
         Go to Login
-    </a>
+    </a> *@
 </div>

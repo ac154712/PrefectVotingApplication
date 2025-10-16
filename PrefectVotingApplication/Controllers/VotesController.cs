@@ -11,7 +11,7 @@ using PrefectVotingApplication.Models;
 
 namespace PrefectVotingApplication.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class VotesController : Controller
     {
         private readonly PrefectVotingApplicationDbContext _context;
@@ -57,7 +57,7 @@ namespace PrefectVotingApplication.Controllers
             return View(await prefectVotingApplicationDbContext.ToListAsync());
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> AllVotes(string searchString, int pageNumber = 1, string viewMode = "grid")
         {
             int pageSize = 8; // Adjust if you want fewer/more per page
