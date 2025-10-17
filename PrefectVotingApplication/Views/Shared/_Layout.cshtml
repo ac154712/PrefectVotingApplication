@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PrefectVotingApplication.styles.css" asp-append-version="true" />
+
 </head>
 <body>
     <header>
@@ -56,9 +57,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="AuditLog" asp-action="Index">Audit Log</a>
-                        </li>
                         
                         }
                     </ul>
@@ -67,11 +65,32 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    @if (ViewData["Title"]?.ToString() == "Home Page")
+    {
+        <div class="fullscreen-section section1">
+            <div class="overlay"></div>
+            <div class="content">
+                <h1>Welcome to Avondale College</h1>
+            </div>
+        </div>
+
+        <div class="fullscreen-section section2">
+        </div>
+
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
-    </div>
+    }
+    else
+    {
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    }
+
+    
     
     <footer id="bottom-footer" class=" footer text-center p-3">
         <div class="container">

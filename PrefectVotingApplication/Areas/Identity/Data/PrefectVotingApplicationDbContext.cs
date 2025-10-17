@@ -29,6 +29,5 @@ public DbSet<PrefectVotingApplication.Models.Election> Election { get; set; } = 
 
 public DbSet<PrefectVotingApplication.Models.Votes> Votes { get; set; } = default!;
 
-public DbSet<PrefectVotingApplication.Models.AuditLog> AuditLog { get; set; } = default!;
 
 }

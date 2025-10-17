@@ -13,8 +13,7 @@ using static PrefectVotingApplication.Models.Election;
 
 namespace PrefectVotingApplication.Controllers
 {
-    [Authorize(Roles = "Staff")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Staff, Admin")] 
     public class ElectionController : Controller
     {
         private readonly PrefectVotingApplicationDbContext _context;
