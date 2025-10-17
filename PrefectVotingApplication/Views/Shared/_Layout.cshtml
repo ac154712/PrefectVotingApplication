@@ -26,6 +26,9 @@
                             @* by default everyone can see the prefects/student page *@
                             <a class="nav-link text-white" asp-area="" asp-controller="Users" asp-action="Index">Students</a>
                         </li> 
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Votes" asp-action="YourVotes">Your Votes</a>
+                        </li>
                         @if (User.IsInRole("Teacher")) //teachers can view only all the votes in the system so if they want to count manually
                         {
                             <li class="nav-item">

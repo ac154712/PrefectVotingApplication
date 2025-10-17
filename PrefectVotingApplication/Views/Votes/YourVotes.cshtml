@@ -1,0 +1,102 @@
+﻿@model IEnumerable<PrefectVotingApplication.Models.Votes>
+@{
+    ViewData["Title"] = "Your Votes";
+    var pageNumber = (int)ViewData["PageNumber"];
+    var totalPages = (int)ViewData["TotalPages"];
+    var viewMode = ViewData["ViewMode"]?.ToString() ?? "grid";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<form asp-action="YourVotes" method="get" class="mb-3">
+    <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search..." class="form-control d-inline" style="width:250px;" />
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a asp-action="YourVotes" class="btn btn-secondary">Reset</a>
+</form>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Your Votes</h2>
+    <div>
+        <a asp-action="YourVotes" asp-route-viewMode="grid" class="btn btn-outline-dark me-2 @(viewMode=="grid" ? "active" : "")">Grid View</a>
+        <a asp-action="YourVotes" asp-route-viewMode="list" class="btn btn-outline-dark @(viewMode=="list" ? "active" : "")">List View</a>
+    </div>
+</div>
+
+<hr />
+
+@if (viewMode == "grid")
+{
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+        @foreach (var vote in Model)
+        {
+            <div class="col">
+                <div class="card h-100 text-center shadow-sm">
+                    <img src="@(string.IsNullOrEmpty(vote.Receiver.ImagePath) ? Url.Content("~/images/user-default.png") : Url.Content(vote.Receiver.ImagePath))"
+                         class="card-img-top" style="height:200px; object-fit:cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@vote.Receiver.FirstName @vote.Receiver.LastName</h5>
+                        <p>@vote.Receiver.Description</p>
+                        <form asp-action="RemoveVote" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@vote.VoteId" />
+                            <button type="submit" class="btn btn-danger">Remove Vote</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else if (viewMode == "list")
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    <a asp-action="YourVotes" asp-route-sortOrder="@ViewData["FirstNameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-viewMode="@ViewData["ViewMode"]">
+                        First Name
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="YourVotes" asp-route-sortOrder="@ViewData["LastNameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-viewMode="@ViewData["ViewMode"]">
+                        Last Name
+                    </a>
+                </th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var vote in Model)
+            {
+                <tr>
+                    <td>@vote.Receiver.FirstName</td>
+                    <td>@vote.Receiver.LastName</td>
+                    <td>@vote.Receiver.Description</td>
+                    <td class ="text-end" style="padding-right: 30px;"> @* moves buttons to far right but with padding so its not too close *@
+                        <form asp-action="RemoveVote" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@vote.VoteId" />
+                            <button type="submit" class="btn btn-danger btn-sm">Remove Vote</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div class="pagination-footer text-center mt-3">
+    @if (pageNumber > 1)
+    {
+        <a asp-action="YourVotes" asp-route-pageNumber="@(pageNumber - 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-viewMode="@ViewData["ViewMode"]" class="btn btn-outline-primary me-2">Previous</a>
+    }
+    <span>Page @pageNumber of @totalPages</span>
+    @if (pageNumber < totalPages)
+    {
+        <a asp-action="YourVotes" asp-route-pageNumber="@(pageNumber + 1)" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-viewMode="@ViewData["ViewMode"]" class="btn btn-outline-primary ms-2">Next</a>
+    }
+</div>

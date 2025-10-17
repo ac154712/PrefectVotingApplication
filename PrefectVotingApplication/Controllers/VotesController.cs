@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PrefectVotingApplication.Areas.Identity.Data;
 using PrefectVotingApplication.Models;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace PrefectVotingApplication.Controllers
 {
@@ -15,10 +17,11 @@ namespace PrefectVotingApplication.Controllers
     public class VotesController : Controller
     {
         private readonly PrefectVotingApplicationDbContext _context;
-
-        public VotesController(PrefectVotingApplicationDbContext context)
+        private readonly UserManager<PrefectVotingApplicationUser> _userManager;
+        public VotesController(PrefectVotingApplicationDbContext context, UserManager<PrefectVotingApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Votes
@@ -228,8 +231,70 @@ namespace PrefectVotingApplication.Controllers
             return View(votes);
         }
 
-        // GET: Votes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> YourVotes(string searchString, string sortOrder, int pageNumber = 1, string viewMode = "grid")
+        {
+            int pageSize = 16;
+
+            // get logged in user
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
+
+            // fetch votes made by this user
+            var votesQuery = _context.Votes
+                .Include(v => v.Receiver)
+                .Where(v => v.VoterId == currentUser.Id)
+                .AsQueryable();
+
+            // search
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                votesQuery = votesQuery.Where(v =>
+                    v.Receiver.FirstName.Contains(searchString) ||
+                    v.Receiver.LastName.Contains(searchString));
+            }
+
+            // sort
+            ViewData["FirstNameSortParm"] = sortOrder == "first_desc" ? "first_asc" : "first_desc";
+            ViewData["LastNameSortParm"] = sortOrder == "last_desc" ? "last_asc" : "last_desc";
+
+            votesQuery = sortOrder switch
+            {
+                "first_asc" => votesQuery.OrderBy(v => v.Receiver.FirstName),
+                "first_desc" => votesQuery.OrderByDescending(v => v.Receiver.FirstName),
+                "last_asc" => votesQuery.OrderBy(v => v.Receiver.LastName),
+                "last_desc" => votesQuery.OrderByDescending(v => v.Receiver.LastName),
+                _ => votesQuery.OrderByDescending(v => v.Timestamp)
+            };
+
+            // pagination
+            var totalCount = await votesQuery.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            var votes = await votesQuery.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            ViewData["PageNumber"] = pageNumber;
+            ViewData["TotalPages"] = totalPages;
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["ViewMode"] = viewMode;
+
+            return View(votes);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveVote(int id)
+        {
+            var vote = await _context.Votes.FindAsync(id);
+            if (vote != null && vote.VoterId == _userManager.GetUserId(User))
+            {
+                _context.Votes.Remove(vote);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Vote removed successfully!";
+            }
+            return RedirectToAction(nameof(YourVotes));
+        }
+
+    // GET: Votes/Delete/5
+    public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
