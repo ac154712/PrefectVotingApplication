@@ -39,7 +39,7 @@
                     <div class="card-body">
                         <h5 class="card-title">@vote.Receiver.FirstName @vote.Receiver.LastName</h5>
                         <p>@vote.Receiver.Description</p>
-                        <form asp-action="RemoveVote" method="post">
+                        <form asp-action="RemoveVote" method="post"> @* this the only thing changed, instead of Vote, asp route is removevote which i made in controller *@
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@vote.VoteId" />
                             <button type="submit" class="btn btn-danger">Remove Vote</button>

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PrefectVotingApplication.Areas.Identity.Data;
+using PrefectVotingApplication.Models;
 
 namespace PrefectVotingApplication.Controllers
 
@@ -45,8 +46,14 @@ namespace PrefectVotingApplication.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var users = from u in _context.User.Include(u => u.Role)
-                        select u;
+
+
+            var users = _context.User.Include(u => u.Role).AsQueryable();
+
+            
+            
+            users = users.Where(u => u.Role.RoleName == Role.RoleNames.Student); // Filter to only students
+            
 
             // search
             if (!String.IsNullOrEmpty(searchString))

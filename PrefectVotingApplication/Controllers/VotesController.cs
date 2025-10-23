@@ -153,30 +153,30 @@ namespace PrefectVotingApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Vote(string receiverId, string viewMode)
         {
-            var voterEmail = User.Identity?.Name;
+            var voterEmail = User.Identity?.Name; //grabs user name(currently logged in)
             var voter = await _context.User.FirstOrDefaultAsync(u => u.Email == voterEmail);
 
-            if (voter == null || string.IsNullOrEmpty(receiverId))
+            if (voter == null || string.IsNullOrEmpty(receiverId)) //if a user if not logged-in
             {
-                TempData["Message"] = "Vote failed. Invalid voter or receiver.";
-                return RedirectToAction("Index", "PrefectVotingApplicationUsers", new { viewMode = viewMode ?? "grid" }); // or your main voting page
+                TempData["Message"] = "Vote failed. Login first.";
+                return RedirectToAction("Index", "PrefectVotingApplicationUsers", new { viewMode = viewMode ?? "grid" }); 
             }
 
-            var activeElection = await _context.Election
+            var activeElection = await _context.Election // finds the newest election and it has to be ongoing
                 .OrderByDescending(e => e.ElectionId)
                 .FirstOrDefaultAsync();
 
-            if (activeElection == null)
+            if (activeElection == null) // if there is no active election, then it will show this
             {
                 TempData["Message"] = "No active election found.";
                 return RedirectToAction("Index", "PrefectVotingApplicationUsers", new { viewMode = viewMode ?? "grid" });
             }
 
-            // prevents duplicate voting for same receiver
+            // finds for duplicate voting for same receiver
             bool alreadyVoted = await _context.Votes
                 .AnyAsync(v => v.VoterId == voter.Id && v.ReceiverId == receiverId && v.ElectionId == activeElection.ElectionId);
 
-            if (alreadyVoted)
+            if (alreadyVoted) // if user has already voted for the same prefect
             {
                 TempData["Message"] = "You have already voted for this prefect.";
                 return RedirectToAction("Index", "PrefectVotingApplicationUsers", new { viewMode = viewMode ?? "grid" });
@@ -190,10 +190,10 @@ namespace PrefectVotingApplication.Controllers
                 Timestamp = DateTime.Now
             };
 
-            _context.Votes.Add(vote);
+            _context.Votes.Add(vote); 
             await _context.SaveChangesAsync();
 
-            TempData["Message"] = "Vote successfully recorded!";
+            TempData["Message"] = "Vote successfully recorded!"; //if the if statements are passed or not gotten captured, then the vote is successful
             return RedirectToAction("Index", "PrefectVotingApplicationUsers", new { viewMode = viewMode ?? "grid" });
         }
         [HttpPost]
@@ -281,12 +281,12 @@ namespace PrefectVotingApplication.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveVote(int id)
+        public async Task<IActionResult> RemoveVote(int id) // Delete method but simpler(no confirmation)
         {
-            var vote = await _context.Votes.FindAsync(id);
+            var vote = await _context.Votes.FindAsync(id); //finds id
             if (vote != null && vote.VoterId == _userManager.GetUserId(User))
             {
-                _context.Votes.Remove(vote);
+                _context.Votes.Remove(vote); // deletes id
                 await _context.SaveChangesAsync();
                 TempData["Success"] = "Vote removed successfully!";
             }

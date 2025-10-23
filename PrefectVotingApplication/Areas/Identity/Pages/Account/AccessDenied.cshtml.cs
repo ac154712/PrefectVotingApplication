@@ -29,7 +29,7 @@ public class AccessDeniedModel : PageModel
         }
         else
         {
-            Message = "You must be logged in as an Admin to access this page.";
+            Message = "You must be logged in to access this page.";
         }
 
         return Page();
