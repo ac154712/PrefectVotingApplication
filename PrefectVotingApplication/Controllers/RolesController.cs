@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -15,15 +16,32 @@ namespace PrefectVotingApplication.Controllers
     public class RolesController : Controller
     {
         private readonly PrefectVotingApplicationDbContext _context;
+        private readonly UserManager<PrefectVotingApplicationUser> _userManager;
 
-        public RolesController(PrefectVotingApplicationDbContext context)
+        public RolesController(PrefectVotingApplicationDbContext context, UserManager<PrefectVotingApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
+        private async Task LoadUserRoleAsync()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var fullUser = await _context.Users
+                        .Include(u => u.Role)
+                        .FirstOrDefaultAsync(u => u.Id == user.Id);
 
+                    ViewBag.RoleName = fullUser?.Role?.RoleName.ToString();
+                }
+            }
+        }
         // GET: Roles
         public async Task<IActionResult> Index()
         {
+            await LoadUserRoleAsync(); // load role before rendering view
             return View(await _context.Role.ToListAsync());
         }
 

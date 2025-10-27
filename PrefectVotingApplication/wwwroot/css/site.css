@@ -83,6 +83,73 @@ body {
     z-index: 2;
 }
 
+/* Hero texts/contents in the homeapge */
+
+/* hero content specifics */
+.hero-content .hero-small {
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    opacity: 0.95;
+    margin-bottom: 0.5rem;
+}
+
+/* very large main title */
+.hero-title {
+    font-weight: 900;
+    line-height: 0.95;
+    margin: 0.2rem 0 .8rem;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: clamp(38px, 6vw, 100px); /* clamps so very large on desktop, smaller on mobile */
+    text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    letter-spacing: -0.8px;
+}
+
+/* subtitle paragraph */
+.hero-subtitle {
+    font-size: clamp(19px, 3vw, 50px);
+    opacity: 0.95;
+    margin-bottom: 1.2rem;
+}
+
+/* buttons */
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.hero-btn {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 12px 32px;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+/*the vote now button*/
+.primary-btn {
+    background-color: #0056ff;
+    color: white;
+}
+
+    .primary-btn:hover {
+        background-color: #0041c4;
+    }
+/*login*/
+.secondary-btn {
+    border: 2px solid #aaa;
+    color: white;
+    background-color: transparent;
+    box-sizing: border-box; /*make sure the border shows*/
+}
+
+    .secondary-btn:hover {
+        border: 2px solid #333;
+        background-color: #333;
+        color: #fff;
+    }
 
 .navbar-nav img {
     cursor: pointer;
@@ -131,3 +198,31 @@ body {
     margin-bottom: 20px;
     border: 2px solid #ddd;
 }
+
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* align toward the top */
+    padding-top: 80px; /* push it slightly down from top */
+    min-height: 100vh;
+    background: rgba(245, 245, 245, 0.8);
+}
+
+.register-box {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    width: 100%;
+    min-width: 500px;
+    max-width: 550px;
+    transition: transform 0.2s ease-in-out;
+}
+
+    .register-box:hover {
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25); accent-color /*little more darker*/
+    }
+
+    .register-box h2 {
+        font-weight: 600;
+    }

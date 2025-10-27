@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -18,17 +19,34 @@ namespace PrefectVotingApplication.Controllers
     public class PrefectVotingApplicationUsersController : Controller
     {
         private readonly PrefectVotingApplicationDbContext _context;
+        private readonly UserManager<PrefectVotingApplicationUser> _userManager;
 
-        public PrefectVotingApplicationUsersController(PrefectVotingApplicationDbContext context)
+        public PrefectVotingApplicationUsersController(PrefectVotingApplicationDbContext context, UserManager<PrefectVotingApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
+        }
+        private async Task LoadUserRoleAsync()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var fullUser = await _context.Users
+                        .Include(u => u.Role)
+                        .FirstOrDefaultAsync(u => u.Id == user.Id);
+
+                    ViewBag.RoleName = fullUser?.Role?.RoleName.ToString();
+                }
+            }
         }
 
- 
         // GET: PrefectVotingApplicationUsers
         [HttpGet("")]
         public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber, string viewMode = "grid")
         {
+            await LoadUserRoleAsync(); // load role before rendering view
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["LastNameSortParm"] = sortOrder == "LastName" ? "lastname_desc" : "LastName";
@@ -48,12 +66,16 @@ namespace PrefectVotingApplication.Controllers
 
 
 
-            var users = _context.User.Include(u => u.Role).AsQueryable();
+            //var users = _context.User.Include(u => u.Role).AsQueryable();
+            var currentUserId = _userManager.GetUserId(User);
 
+            //users = users.Where(u => u.Role.RoleName == Role.RoleNames.Student); // Filter to only students
+
+            var users = _context.User
+            .Include(u => u.Role)
+            .Where(u => u.Role.RoleName == Role.RoleNames.Student && u.Id != currentUserId); //Filters to only students and removes current loggined in suer
             
-            
-            users = users.Where(u => u.Role.RoleName == Role.RoleNames.Student); // Filter to only students
-            
+
 
             // search
             if (!String.IsNullOrEmpty(searchString))

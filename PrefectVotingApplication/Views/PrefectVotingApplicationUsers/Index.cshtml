@@ -24,9 +24,10 @@
     }
 
 </style>
-@* search *@
+@* search fiorm at top *@
 <form asp-action="Index" method="get" class="mb-3">
     <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search..." class="form-control d-inline" style="width:250px;" />
+    <input type="hidden" name="viewMode" value="@ViewData["ViewMode"]" /> <!-- preserves the grid/list whenever searched -->
     <button type="submit" class="btn btn-primary">Search</button>
     <a asp-action="Index" class="btn btn-secondary">Reset</a>
 </form>
@@ -220,7 +221,13 @@ else if (viewMode == "list")
 
                             </form>
                             @* <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@PrefectVotingApplicationUser.Id">Vote</a> *@
-                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@PrefectVotingApplicationUser.Id">x</a>
+                            @if (User.IsInRole("Admin")){
+                                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@PrefectVotingApplicationUser.Id">×</a>
+                            }
+                            @if (User.IsInRole("Staff"))
+                            {
+                                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@PrefectVotingApplicationUser.Id">×</a>
+                            }
                         </td>
                     }
                     

@@ -1,7 +1,13 @@
-﻿@model PrefectVotingApplication.Areas.Identity.Data.PrefectVotingApplicationUser
+﻿@using Microsoft.AspNetCore.Identity
+@using PrefectVotingApplication.Areas.Identity.Data
+@model PrefectVotingApplication.Areas.Identity.Data.PrefectVotingApplicationUser
 
 @{
     ViewData["Title"] = "Details";
+}
+
+@{
+    var roleName = ViewBag.RoleName as string;
 }
 
 <h1>Details</h1>
@@ -34,13 +40,13 @@
                 @Html.DisplayFor(model => model.Description)
             </dd>
 
-            @if (User.IsInRole("Teacher"))
+            @if (roleName == "Teacher")
             {
                 <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Email)</dt>
                 <dd class="col-sm-9">@Html.DisplayFor(model => model.Email)</dd>
             }
 
-            @if (User.IsInRole("Staff"))
+            @if (roleName == "Staff")
             {
                 <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Email)</dt>
                 <dd class="col-sm-9">@Html.DisplayFor(model => model.Email)</dd>

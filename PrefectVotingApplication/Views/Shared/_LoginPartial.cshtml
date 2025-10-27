@@ -7,7 +7,8 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
+        
+        <li class="nav-item">
         <a id="manage" class="nav-link text-white" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
     </li>
     <li class="nav-item">
@@ -15,6 +16,12 @@
             <button id="logout" type="submit" class="nav-link btn btn-link text-white border-0">Logout</button>
         </form>
     </li>
+    if (User.IsInRole("Admin")) //admins can register accounts especially teachers of school
+        {
+            <li class="nav-item">
+                <a class="nav-link text-white" id="register" asp-area="Identity" asp-page="/Account/Register">Register An Account</a>
+            </li>
+        }
 }
 else
 {

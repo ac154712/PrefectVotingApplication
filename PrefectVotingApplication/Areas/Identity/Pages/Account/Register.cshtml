@@ -4,12 +4,11 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1>You need an account to vote!</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
+<div class="register-container">
+        <form id="registerForm" class = "register-box" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <h2>Register</h2>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <div class="form-floating mb-3">
@@ -37,19 +36,30 @@
                 <label asp-for="Input.ConfirmPassword">Confirm Password</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Input.RoleId"></label>
-                <select asp-for="Input.RoleId" asp-items="Model.RoleList" class="form-control">
-                    <option value="">-- Select Role --</option>
-                </select>
-                <span asp-validation-for="Input.RoleId" class="text-danger"></span>
-            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="form-group">
+                    <label asp-for="Input.RoleId"></label>
+                    <select asp-for="Input.RoleId" asp-items="Model.RoleList" class="form-control">
+                        <option value=""> Select Role... </option>
+                    </select>
+                    <span asp-validation-for="Input.RoleId" class="text-danger"></span>
+                </div>
+            } @* removed the option to choos roles, all new registred account are students, teachers must already be registered by admin/staff and admins can only see the dropdown*@
+             
+            
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+
+            <div class="text-center mt-3">
+                <p>
+                    Already have an account?
+                    <a asp-page="/Account/Login" class="login-link">Log in here</a>
+                </p>
+            </div>
         </form>
-    </div>
-    
-    
 </div>
+    
+</>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

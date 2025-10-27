@@ -88,6 +88,7 @@ namespace PrefectVotingApplication.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
+
             [Required(ErrorMessage = "Role ID is required. ")]
             public int RoleId { get; set; }
             // This is the navigation property.EF will use the RoleId foreign key to join the Role table.
@@ -102,6 +103,8 @@ namespace PrefectVotingApplication.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             // Get roles from database
+
+
             RoleList = _context.Role
                 .Select(r => new SelectListItem
                 {
@@ -126,8 +129,21 @@ namespace PrefectVotingApplication.Areas.Identity.Pages.Account
                 user.Description = "";                 // avoid NULL insert
                 user.FirstName = Input.FirstName;      
                 user.LastName = Input.LastName;
-                user.ImagePath = "";
+                user.ImagePath = "~/images/user-default.png";
                 user.RoleId = Input.RoleId;
+
+                
+                if (Input.RoleId == 0)
+                {
+                    var studentRole = _context.Role.FirstOrDefault(r => r.RoleName == Role.RoleNames.Student);
+                    if (studentRole != null)
+                        user.RoleId = studentRole.RoleId;
+                }
+                else
+                {
+                    user.RoleId = Input.RoleId;
+                }
+
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 

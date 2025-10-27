@@ -4,6 +4,7 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,19 +14,36 @@ using static PrefectVotingApplication.Models.Election;
 
 namespace PrefectVotingApplication.Controllers
 {
-    [Authorize(Roles = "Staff, Admin")] 
+    //[Authorize(Roles = "Admin")] 
     public class ElectionController : Controller
     {
         private readonly PrefectVotingApplicationDbContext _context;
+        private readonly UserManager<PrefectVotingApplicationUser> _userManager;
 
-        public ElectionController(PrefectVotingApplicationDbContext context)
+        public ElectionController(PrefectVotingApplicationDbContext context, UserManager<PrefectVotingApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
+        private async Task LoadUserRoleAsync()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var fullUser = await _context.Users
+                        .Include(u => u.Role)
+                        .FirstOrDefaultAsync(u => u.Id == user.Id);
 
+                    ViewBag.RoleName = fullUser?.Role?.RoleName.ToString();
+                }
+            }
+        }
         // GET: Election
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
+            await LoadUserRoleAsync(); // load role before rendering view
             var elections = _context.Election.AsQueryable();
 
             // --- SEARCH ---

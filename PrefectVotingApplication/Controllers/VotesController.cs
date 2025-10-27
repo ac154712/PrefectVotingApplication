@@ -23,10 +23,25 @@ namespace PrefectVotingApplication.Controllers
             _context = context;
             _userManager = userManager;
         }
+        private async Task LoadUserRoleAsync()//since im using a lot of If statements to check for roles, i made this function to reduce redundancy
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var fullUser = await _context.Users
+                        .Include(u => u.Role)
+                        .FirstOrDefaultAsync(u => u.Id == user.Id);
 
+                    ViewBag.RoleName = fullUser?.Role?.RoleName.ToString();
+                }
+            }
+        }
         // GET: Votes
         public async Task<IActionResult> Index(int? pageNumber, string sortOrder)
         {
+            await LoadUserRoleAsync(); // load role before rendering view
             var prefectVotingApplicationDbContext = _context.Votes.Include(v => v.Receiver).Include(v => v.Voter);
 
           
@@ -51,9 +66,18 @@ namespace PrefectVotingApplication.Controllers
         //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> AllVotes(string searchString, int pageNumber = 1)
         {
+            await LoadUserRoleAsync(); // load role before rendering view
             int pageSize = 16;
 
-            var votesQuery = _context.Votes.Include(v => v.Voter).Include(v => v.Receiver).OrderByDescending(v => v.Timestamp).AsQueryable();
+            // gets roles of both voter and receiver for filtering
+            var votesQuery = _context.Votes
+                .Include(v => v.Voter).ThenInclude(u => u.Role)
+                .Include(v => v.Receiver).ThenInclude(u => u.Role).OrderByDescending(v => v.Timestamp).AsQueryable();
+
+            // Only show votes where either the voter OR receiver is Student or Teacher
+            votesQuery = votesQuery.Where(v =>
+                (v.Voter.Role.RoleName == Role.RoleNames.Student || v.Voter.Role.RoleName == Role.RoleNames.Teacher) &&
+                (v.Receiver.Role.RoleName == Role.RoleNames.Student || v.Receiver.Role.RoleName == Role.RoleNames.Teacher));
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -233,6 +257,7 @@ namespace PrefectVotingApplication.Controllers
 
         public async Task<IActionResult> YourVotes(string searchString, string sortOrder, int pageNumber = 1, string viewMode = "grid")
         {
+            await LoadUserRoleAsync(); // load role before rendering view
             int pageSize = 16;
 
             // get logged in user
@@ -240,8 +265,7 @@ namespace PrefectVotingApplication.Controllers
             if (currentUser == null) return Challenge();
 
             // fetch votes made by this user
-            var votesQuery = _context.Votes
-                .Include(v => v.Receiver)
+            var votesQuery = _context.Votes.Include(v => v.Receiver)
                 .Where(v => v.VoterId == currentUser.Id)
                 .AsQueryable();
 
@@ -249,8 +273,7 @@ namespace PrefectVotingApplication.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 votesQuery = votesQuery.Where(v =>
-                    v.Receiver.FirstName.Contains(searchString) ||
-                    v.Receiver.LastName.Contains(searchString));
+                    v.Receiver.FirstName.Contains(searchString) || v.Receiver.LastName.Contains(searchString));
             }
 
             // sort
