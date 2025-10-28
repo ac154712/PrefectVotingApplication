@@ -186,9 +186,9 @@ namespace PrefectVotingApplication.Controllers
                 return RedirectToAction("Index", "PrefectVotingApplicationUsers", new { viewMode = viewMode ?? "grid" }); 
             }
 
-            var activeElection = await _context.Election // finds the newest election and it has to be ongoing
-                .OrderByDescending(e => e.ElectionId)
-                .FirstOrDefaultAsync();
+            var activeElection = await _context.Election
+                .FirstOrDefaultAsync(e => e.Status == Election.ElectionStatus.Active); //finds the one active election
+
 
             if (activeElection == null) // if there is no active election, then it will show this
             {

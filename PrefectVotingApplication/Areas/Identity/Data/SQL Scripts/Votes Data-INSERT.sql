@@ -1,7 +1,8 @@
 INSERT INTO [Election] (ElectionTitle, StartDate, EndDate, Status)
 VALUES --this inserts a fake election with a data range
 ('Prefect Election 2025', '2025-04-01', '2025-04-07', 0),
-('Student Council Election', '2025-05-01', '2025-05-07', 0);
+('Prefect Election 2024', '2024-05-01', '2024-05-07', 2),
+('Prefect Election 2023', '2023-05-01', '2023-05-07', 2);
  
 GO
 INSERT INTO [Votes] (VoterId, ReceiverId, ElectionId, Timestamp)
@@ -35,8 +36,49 @@ VALUES
 ('11', '18', 1, getdate()),   -- isabella votes for paul again
 ('12', '19', 1, getdate()),   -- jack votes for quinn
 ('13', '20', 1, getdate()),   -- katherine votes for rachel
-('21', '8', 1, getdate());    -- teacher sara votes for frank(a student ofc)
-
+('21', '8', 1, getdate()),    -- teacher sara votes for frank
+--more votes--
+('24', '25', 1, getdate()),
+('25', '26', 1, getdate()),
+('26', '27', 1, getdate()),
+('27', '28', 1, getdate()),
+('28', '29', 1, getdate()),
+('29', '30', 1, getdate()),
+('30', '31', 1, getdate()),
+('31', '32', 1, getdate()),
+('32', '33', 1, getdate()),
+('33', '34', 1, getdate()),
+('34', '35', 1, getdate()),
+('35', '36', 1, getdate()),
+('36', '37', 1, getdate()),
+('37', '38', 1, getdate()),
+('38', '39', 1, getdate()),
+('39', '40', 1, getdate()),
+('40', '41', 1, getdate()),
+('41', '42', 1, getdate()),
+('42', '43', 1, getdate()),
+('43', '44', 1, getdate()),
+('44', '45', 1, getdate()),
+('45', '46', 1, getdate()),
+('46', '47', 1, getdatE()),
+('47', '48', 1, getdate()),
+('48', '49', 1, getdate()),
+('49', '50', 1, getdate()),
+('50', '51', 1, getdate()),
+('51', '52', 1, getdate()),
+('52', '53', 1, getdate()),
+('53', '54', 1, getdate()),
+('54', '55', 1, getdate()),
+('55', '56', 1, getdate()),
+('56', '57', 1, getdate()),
+('57', '58', 1, getdate()),
+('58', '59', 1, getdate()),
+('59', '60', 1, getdate()),
+('60', '61', 1, getdate()),
+('61', '62', 1, getdate()),
+('62', '63', 1, getdate()),
+('63', '64', 1, getdate()),
+('64', '24', 1, getdate());
 --GO
 --INSERT INTO [AuditLog] (VoteId, UserId, Action, Timestamp)
 --VALUES
