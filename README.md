@@ -72,7 +72,8 @@ If you want to run this project locally, here’s a step-by-step:
 
 1. **Clone the repository** to your computer
 2. **Open the solution file (`.sln`)** in Visual Studio 2022 or later
-3. **(Optional step)Configure the database** by editing `appsettings.json`. This is where the application knows where to store and retrieve data.
+3. **(Optional step if you've run the database before and want a fresh start)
+Configure the database** by editing `appsettings.json`. This is where the application knows where to store and retrieve data.
 
 Example for local setup:
 
@@ -88,13 +89,26 @@ Example for remote SQL Server:
 
 4. **Apply migrations** to create all necessary tables (AspNetUsers, Votes, Elections, etc.):
 
+
+Step 1: Open the Package manager Console by Selecting **"Tools"** in the menu bar.
+
+Step 2: Then Select **"NuGet Package Manager"**, and then **Package Manager Console**
+
+<p align="center"> 
+<img width="514" height="412" alt="Screenshot 2025-10-29 at 12 04 07 pm" src="https://github.com/user-attachments/assets/39d1a382-d4a3-40e1-b79d-8fbddcaa1e30" />
+</p>
+
+Step 3: Type this in the **Console**
 ```powershell
 Update-Database
 ```
+<br>
 
-5. **Seed roles and admin account or just run the program once**. The system automatically creates roles for Admin, Staff, Teacher, and Student. An admin account is also created on first run. If it doesn’t appear, you can add one manually in SQL Server or assign roles through the Roles page once logged in as any admin.
+5. **Run the program once**. The system automatically creates roles for Admin, Staff, Teacher, and Student. An admin account is also created on first run. If it doesn’t appear, you can add one manually in SQL Server or assign roles through the Roles page once logged in as any admin.
 
 This setup ensures that when you run the app, everything works from day one, users, roles, and database tables are already in place. 
+<br><br><br>
+
 
 6. **Seed data using SQL scripts or dummy data.** Instead of manually entering everything, I set up my application so it can be preloaded with SQL scripts or dummy data for testing. This includes accounts with predefined roles such as Staff, Teacher, and Student, as well as a few sample users for each role.
 Here’s where everything is located:
@@ -119,7 +133,22 @@ I separated the scripts intentionally so that you can test the system in two dif
 
 The idea is that a real school would already have a database of existing users (students, teachers, and staff with email addresses and details). The SQL scripts simulate that scenario by adding dummy users directly into the AspNetUsers table.
 
+<br>
 
+## To properly Run the Querries
+1. Once you found the files, **Open and querry and run it**
+2. Select **"Local"** then **"MSQLLocalDB"**
+<p align="center"> 
+ <img width="662" height="573" alt="Screenshot 2025-10-29 at 11 38 35 am" src="https://github.com/user-attachments/assets/6ea80472-f994-4b0e-ae03-f28024b3473d" />
+</p>
+
+3. Set the **"Trust Server Certificate"** to **"True"**
+4. Click the dropdown for **Database Name**
+<p align="center"> 
+<img width="445" height="520" alt="Screenshot 2025-10-29 at 11 48 42 am" src="https://github.com/user-attachments/assets/825f6b3f-7753-4ce4-8370-01390a088366" />
+</p>
+
+5.Finally, **Select the Database**
 
 <br><br>
 
