@@ -28,4 +28,12 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Votes\TopStudents.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Votes\TopStudents.cshtml" />
+  </ItemGroup>
+
 </Project>

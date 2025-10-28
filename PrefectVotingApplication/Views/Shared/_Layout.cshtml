@@ -34,6 +34,9 @@
                             @* by default everyone can see the prefects/student page *@
                             <a class="nav-link text-white" asp-area="" asp-controller="Users" asp-action="Index">Students</a>
                         </li> 
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Votes" asp-action="TopStudents">Top 60</a>
+                        </li>
                         @if (roleName == "Student")
                         {
                             <li class="nav-item">
@@ -65,19 +68,21 @@
                         
                         @if (User.IsInRole("Admin")) // admin can see everything
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Votes" asp-action="AllVotes">All Votes</a>
-                            </li>
+                        @* <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Votes" asp-action="AllVotes">All Votes</a>
+                        </li> *@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Votes" asp-action="Index">VotesLog</a>
                         </li>
-                        <li class="nav-item">
+                        @* <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Election" asp-action="Index">Election(Year)</a>
-                        </li>
+                        </li> *@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
                         </li>
-                        
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area=""  asp-controller="Votes" asp-action="TopStudents">Top 60</a>
+                        </li>
                         }
                     </ul>
                 </div>

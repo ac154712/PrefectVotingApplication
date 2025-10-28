@@ -192,7 +192,7 @@ namespace PrefectVotingApplication.Controllers
 
             if (activeElection == null) // if there is no active election, then it will show this
             {
-                TempData["Message"] = "No active election found.";
+                TempData["Message"] = "Wait for Staff to start election.";
                 return RedirectToAction("Index", "PrefectVotingApplicationUsers", new { viewMode = viewMode ?? "grid" });
             }
 
@@ -205,6 +205,17 @@ namespace PrefectVotingApplication.Controllers
                 TempData["Message"] = "You have already voted for this prefect.";
                 return RedirectToAction("Index", "PrefectVotingApplicationUsers", new { viewMode = viewMode ?? "grid" });
             }
+
+            // Check if user reached 60 vote limit
+            int totalUserVotes = await _context.Votes
+                .CountAsync(v => v.VoterId == voter.Id && v.ElectionId == activeElection.ElectionId);
+
+            if (totalUserVotes >= 60) //if total votes is over 60 or is 60, it will give an error message instead of counting
+            {
+                TempData["Message"] = "You already have 60 votes.";
+                return RedirectToAction("Index", "PrefectVotingApplicationUsers", new { viewMode = viewMode ?? "grid" });
+            }
+
 
             var vote = new Votes
             {
@@ -301,6 +312,64 @@ namespace PrefectVotingApplication.Controllers
 
             return View(votes);
         }
+        public async Task<IActionResult> TopStudents(string viewMode = "grid")
+        {
+            await LoadUserRoleAsync();
+            // looks for current/active election 
+            var activeElection = await _context.Election
+                .FirstOrDefaultAsync(e => e.Status == Election.ElectionStatus.Active);
+
+            if (activeElection == null) 
+            {
+                // No election -> return empty list
+                ViewBag.Message = "There is currently no active election.";
+                ViewData["ViewMode"] = viewMode;
+                return View(new List<object>());
+            }
+
+            var studentRole = await _context.Role // gets RoleId for student 
+                .FirstOrDefaultAsync(r => r.RoleName == Role.RoleNames.Student);
+
+            if (studentRole == null)
+            {
+                ViewData["ViewMode"] = viewMode;
+                return View(new List<object>());
+            }
+
+            var studentRoleId = studentRole.RoleId;
+
+            // Query top 60 student candidates by total weighted votes
+            var topStudents = await _context.Votes
+                .Where(v => v.ElectionId == activeElection.ElectionId
+                    && v.Receiver.RoleId == studentRoleId) // filter by RoleId (more reliable)
+                .Include(v => v.Voter) // we only need voter.RoleId (no deep nav required)
+                .ThenInclude(voter => voter.Role)
+                .Include(v => v.Receiver)
+                .GroupBy(v => new
+                {
+                    v.Receiver.Id,
+                    v.Receiver.FirstName,
+                    v.Receiver.LastName,
+                    v.Receiver.Description,
+                    v.Receiver.ImagePath
+                })
+                .Select(g => new
+                {
+                    g.Key.Id,
+                    g.Key.FirstName,
+                    g.Key.LastName,
+                    g.Key.Description,
+                    g.Key.ImagePath,
+                    TotalVotes = g.Sum(v => (int?)(v.Voter.Role != null ? v.Voter.Role.VoteWeight : 0)) ?? 0
+                })
+                .OrderByDescending(x => x.TotalVotes)
+                .Take(60)
+                .ToListAsync();
+
+            ViewData["ViewMode"] = viewMode;
+            return View("~/Views/Votes/TopStudents.cshtml", topStudents);
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

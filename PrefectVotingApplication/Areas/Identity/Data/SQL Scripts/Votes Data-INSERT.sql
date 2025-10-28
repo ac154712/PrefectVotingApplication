@@ -37,35 +37,35 @@ VALUES
 ('13', '20', 1, getdate()),   -- katherine votes for rachel
 ('21', '8', 1, getdate());    -- teacher sara votes for frank(a student ofc)
 
-GO
-INSERT INTO [AuditLog] (VoteId, UserId, Action, Timestamp)
-VALUES
-(1, 1, 0, getdate()),   -- john created vote
-(2, 2, 0, getdate()),   -- jane created vote
-(3, 3, 0, getdate()),   -- alice created vote
-(4, 4, 0, getdate()),   -- bob created vote
-(5, 5, 0, getdate()),   -- charlie created vote
-(6, 6, 0, getdate()),   -- david created vote
-(7, 7, 0, getdate()),   -- emma created vote
-(8, 8, 0, getdate()),   -- frank created vote
-(9, 9, 0, getdate()),   -- grace created vote
-(10, 10, 0, getdate()), -- henry created vote
-(11, 11, 0, getdate()), -- isabella created vote
-(12, 12, 0, getdate()), -- jack created vote
-(13, 13, 0, getdate()), -- katherine created vote
-(14, 14, 0, getdate()), -- liam created vote
-(15, 15, 0, getdate()), -- mia created vote
-(16, 16, 0, getdate()), -- noah created vote
-(17, 1, 0, getdate()),  -- john again
-(18, 2, 0, getdate()),  -- jane again
-(19, 3, 0, getdate()),  -- alice again
-(20, 4, 0, getdate()),  -- bob again
-(21, 5, 0, getdate()),  -- charlie again
-(22, 6, 0, getdate()),  -- david again
-(23, 7, 0, getdate()),  -- emma again
-(24, 8, 0, getdate()),  -- frank again
-(25, 9, 0, getdate()),  -- grace again
-(26, 10, 0, getdate()), -- henry again
-(27, 11, 0, getdate()), -- isabella again
-(28, 12, 0, getdate()), -- jack again
-(29, 13, 0, getdate()); -- katherine again
+--GO
+--INSERT INTO [AuditLog] (VoteId, UserId, Action, Timestamp)
+--VALUES
+--(1, 1, 0, getdate()),   -- john created vote
+--(2, 2, 0, getdate()),   -- jane created vote
+--(3, 3, 0, getdate()),   -- alice created vote
+--(4, 4, 0, getdate()),   -- bob created vote
+--(5, 5, 0, getdate()),   -- charlie created vote
+--(6, 6, 0, getdate()),   -- david created vote
+--(7, 7, 0, getdate()),   -- emma created vote
+--(8, 8, 0, getdate()),   -- frank created vote
+--(9, 9, 0, getdate()),   -- grace created vote
+--(10, 10, 0, getdate()), -- henry created vote
+--(11, 11, 0, getdate()), -- isabella created vote
+--(12, 12, 0, getdate()), -- jack created vote
+--(13, 13, 0, getdate()), -- katherine created vote
+--(14, 14, 0, getdate()), -- liam created vote
+--(15, 15, 0, getdate()), -- mia created vote
+--(16, 16, 0, getdate()), -- noah created vote
+--(17, 1, 0, getdate()),  -- john again
+--(18, 2, 0, getdate()),  -- jane again
+--(19, 3, 0, getdate()),  -- alice again
+--(20, 4, 0, getdate()),  -- bob again
+--(21, 5, 0, getdate()),  -- charlie again
+--(22, 6, 0, getdate()),  -- david again
+--(23, 7, 0, getdate()),  -- emma again
+--(24, 8, 0, getdate()),  -- frank again
+--(25, 9, 0, getdate()),  -- grace again
+--(26, 10, 0, getdate()), -- henry again
+--(27, 11, 0, getdate()), -- isabella again
+--(28, 12, 0, getdate()), -- jack again
+--(29, 13, 0, getdate()); -- katherine again

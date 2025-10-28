@@ -1,0 +1,67 @@
+﻿@model IEnumerable<dynamic>
+@{
+    
+    ViewData["Title"] = "TopStudents";
+    var viewMode = ViewData["ViewMode"]?.ToString() ?? "grid";
+}
+
+<h2 class="mb-4">Top 60 Students by Votes</h2>
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-warning">@ViewBag.Message</div>
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div></div>
+    <div>
+        <a asp-action="TopStudents" asp-route-viewMode="grid" class="btn btn-outline-dark me-2 @(viewMode=="grid" ? "active" : "")">Grid View</a>
+        <a asp-action="TopStudents" asp-route-viewMode="list" class="btn btn-outline-dark @(viewMode=="list" ? "active" : "")">List View</a>
+    </div>
+</div>
+
+@if (viewMode == "grid")
+{
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+        @foreach (var student in Model)
+        {
+            <div class="col">
+                <div class="card h-100 text-center shadow-sm">
+                    <img src="@(string.IsNullOrEmpty(student.ImagePath) ? Url.Content("~/images/user-default.png") : Url.Content(student.ImagePath))"
+                         class="card-img-top" style="height:200px; object-fit:cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@student.FirstName @student.LastName</h5>
+                        <p class="text-muted">Total Votes: <strong>@student.TotalVotes</strong></p>
+                        <p class="small">@student.Description</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Total Votes</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int rank = 1;
+            }
+            @foreach (var student in Model)
+            {
+                <tr>
+                    <td>@rank</td>
+                    <td>@student.FirstName @student.LastName</td>
+                    <td>@student.TotalVotes</td>
+                    <td>@student.Description</td>
+                </tr>
+                rank++;
+            }
+        </tbody>
+    </table>
+}

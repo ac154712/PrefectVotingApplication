@@ -40,6 +40,22 @@ namespace PrefectVotingApplication.Controllers
                 }
             }
         }
+        private async Task EnsureSingleActiveElectionAsync(int? keepActiveElectionId = null) //only one active election at a time
+        {
+            var otherElections = await _context.Election
+                .Where(e => e.Status == Election.ElectionStatus.Active &&
+                            (keepActiveElectionId == null || e.ElectionId != keepActiveElectionId))
+                .ToListAsync();
+
+            foreach (var e in otherElections)
+            {
+                e.Status = Election.ElectionStatus.Pending;
+                _context.Update(e);
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
         // GET: Election
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
@@ -107,13 +123,16 @@ namespace PrefectVotingApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ElectionId,ElectionTitle,StartDate,EndDate,Status")] Election election)
         {
+            
             if (!ModelState.IsValid)
             {
+                election.Status = Election.ElectionStatus.Pending; // makes all new created elections pending by default
+
                 _context.Add(election);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.StatusList = new SelectList(Enum.GetValues(typeof(ElectionStatus)));
+            // ViewBag.StatusList = new SelectList(Enum.GetValues(typeof(ElectionStatus))); don't need this code no more because i will delete viewbag in razor page
             return View(election);
         }
 
@@ -148,14 +167,32 @@ namespace PrefectVotingApplication.Controllers
 
             if (!ModelState.IsValid)
             {
+                // --- Check if another election is already active ---
+                if (election.Status == Election.ElectionStatus.Active)
+                {
+                    var existingActive = await _context.Election
+                        .FirstOrDefaultAsync(e => e.Status == Election.ElectionStatus.Active && e.ElectionId != election.ElectionId);
+
+                    if (existingActive != null)
+                    {
+                        // Error message to user
+                        ModelState.AddModelError("", "There is already an active election. Please make the pending it first before activating a new one.");
+
+                        ViewBag.StatusList = new SelectList(Enum.GetValues(typeof(Election.ElectionStatus)));
+                        return View(election);
+                    }
+                }
+
+
                 try
                 {
                     _context.Update(election);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ElectionExists(election.ElectionId))
+                    if (!_context.Election.Any(e => e.ElectionId == election.ElectionId))/*(!ElectionExists(election.ElectionId))*/
                     {
                         return NotFound();
                     }
